@@ -7,6 +7,7 @@ import lombok.Setter;
 public class Desert extends Air {
     @Getter @Setter
     private double dustParticles;
+    private final static double maxScore = 65;
 
     public Desert(String name, double mass, double humidity, double temperature, double oxygenLevel, double dustParticles) {
         super(name, mass, humidity, temperature, oxygenLevel);
@@ -20,5 +21,10 @@ public class Desert extends Air {
         double normalizeScore = Math.max(0, Math.min(100, score));
         //rotunjirea scorului
         return Math.round(normalizeScore * 100.0) / 100.0;
+    }
+
+    @Override
+    public double getMaxScore(){
+        return maxScore;
     }
 }

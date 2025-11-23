@@ -7,6 +7,8 @@ import lombok.Setter;
 public class Tropical extends Air {
     @Getter @Setter
     private double co2Level;
+    private final static double maxScore = 82;
+
 
     public Tropical(String name, double mass, double humidity, double temperature,double oxygenLevel, double co2Level) {
         super(name, mass, humidity, temperature, oxygenLevel);
@@ -19,5 +21,10 @@ public class Tropical extends Air {
         double normalizeScore = Math.max(0, Math.min(100, score));
         //rotunjirea scorului
         return Math.round(normalizeScore * 100.0) / 100.0;
+    }
+
+    @Override
+    public double getMaxScore(){
+        return maxScore;
     }
 }

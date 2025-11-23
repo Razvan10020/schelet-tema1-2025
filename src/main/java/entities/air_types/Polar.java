@@ -7,6 +7,8 @@ import lombok.Setter;
 public class Polar extends Air {
     @Getter @Setter
     private double iceCrystalConcentration;
+    private final static double maxScore = 142;
+
 
     public Polar(String name, double mass, double humidity, double temperature,double oxygenLevel, double iceCrystalConcentration) {
         super(name, mass, humidity, temperature, oxygenLevel);
@@ -19,5 +21,10 @@ public class Polar extends Air {
         double normalizeScore = Math.max(0, Math.min(100, score));
         //rotunjirea scorului
         return Math.round(normalizeScore * 100.0) / 100.0;
+    }
+
+    @Override
+    public double getMaxScore(){
+        return maxScore;
     }
 }

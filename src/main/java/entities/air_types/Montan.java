@@ -7,6 +7,8 @@ import lombok.Setter;
 public class Montan extends Air {
     @Getter @Setter
     private double altitude;
+    private final static double maxScore = 78;
+
 
     public Montan(String name, double mass, double humidity, double temperature,double oxygenLevel, double altitude) {
         super(name, mass, humidity, temperature, oxygenLevel);
@@ -22,5 +24,10 @@ public class Montan extends Air {
         // Normalizare && Rotunjire
         double normalizeScore = Math.max(0, Math.min(100, score));
         return Math.round(normalizeScore * 100.0) / 100.0;
+    }
+
+    @Override
+    public double getMaxScore(){
+        return maxScore;
     }
 }

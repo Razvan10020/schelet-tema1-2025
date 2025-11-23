@@ -1,4 +1,4 @@
-package entities.AirTypes;
+package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
@@ -8,7 +8,7 @@ public class Temperat extends Air {
     @Getter @Setter
     private double pollenLevel;
 
-    public Tropical(String name, double mass, double humidity, double temperature,double oxygenLevel, double pollenLevel) {
+    public Temperat(String name, double mass, double humidity, double temperature,double oxygenLevel, double pollenLevel) {
         super(name, mass, humidity, temperature, oxygenLevel);
         this.pollenLevel = pollenLevel;
     }

@@ -1,4 +1,4 @@
-package entities.AirTypes;
+package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;

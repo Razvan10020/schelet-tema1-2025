@@ -1,4 +1,4 @@
-package entities.AirTypes;
+package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
@@ -8,11 +8,12 @@ public class Desert extends Air {
     @Getter @Setter
     private double dustParticles;
 
-    public Tropical(String name, double mass, double humidity, double temperature, double oxygenLevel, double dustParticles) {
+    public Desert(String name, double mass, double humidity, double temperature, double oxygenLevel, double dustParticles) {
         super(name, mass, humidity, temperature, oxygenLevel);
         this.dustParticles = dustParticles;
     }
 
+    @Override
     public double calculateQualityScore(){
         double score = (getOxygenLevel()*2) - (this.dustParticles*0.2) - (getTemperature()*0.3);
         // normalizarea scorului

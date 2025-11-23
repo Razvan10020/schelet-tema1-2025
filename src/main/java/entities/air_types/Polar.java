@@ -1,4 +1,4 @@
-package entities.AirTypes;
+package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
@@ -8,7 +8,7 @@ public class Polar extends Air {
     @Getter @Setter
     private double iceCrystalConcentration;
 
-    public Tropical(String name, double mass, double humidity, double temperature,double oxygenLevel, double iceCrystalConcentration) {
+    public Polar(String name, double mass, double humidity, double temperature,double oxygenLevel, double iceCrystalConcentration) {
         super(name, mass, humidity, temperature, oxygenLevel);
         this.iceCrystalConcentration = iceCrystalConcentration;
     }

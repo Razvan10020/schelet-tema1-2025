@@ -1,21 +1,21 @@
-package entities.SoilTypes;
+package entities.soil_types;
 
 import entities.Soil;
 import lombok.Getter;
 import lombok.Setter;
 
-public class GrasslandSoil extends Soil {
+public class SwampSoil extends Soil {
     @Getter @Setter
-    private double rootDensity;
+    private double waterLogging;
 
-    public GrasslandSoil(String name, double mass, double nitrogen, double waterRetention, double solidpH, double organicMatter, double rootDensity) {
+    public SwampSoil(String name, double mass, double nitrogen, double waterRetention, double solidpH, double organicMatter, double waterLogging) {
         super(name, mass, nitrogen, waterRetention, solidpH, organicMatter);
-        this.rootDensity = rootDensity;
+        this.waterLogging = waterLogging;
     }
 
     @Override
     public double calculateQualityScore(){
-        double score = (this.getNitrogen() * 1.3) + (getOrganicMatter() * 1.5) + (rootDensity * 0.8);
+        double score = (this.getNitrogen() * 1.1) + (this.getOrganicMatter() * 2.2) - (this.waterLogging * 5);
 
         //normalizare a scorului
         double normalizeScore = Math.max(0, Math.min(100, score));

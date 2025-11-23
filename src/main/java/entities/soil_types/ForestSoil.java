@@ -1,4 +1,4 @@
-package entities.SoilTypes;
+package entities.soil_types;
 
 import entities.Soil;
 import lombok.Getter;
@@ -15,7 +15,7 @@ public class ForestSoil extends Soil {
 
     @Override
     public double calculateQualityScore(){
-        double score = (this.getNitrogen() * 1.2) + (this.getOrganicMatter() * 2) + (this.getWaterRetention() * 1.5) + (leafLitter * 0.3);
+        double score = (this.getNitrogen() * 1.2) + (this.getOrganicMatter() * 2) + (this.getWaterRetention() * 1.5) + (this.leafLitter * 0.3);
 
         //normalizare a scorului
         double normalizeScore = Math.max(0, Math.min(100, score));

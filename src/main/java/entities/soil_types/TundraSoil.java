@@ -1,22 +1,21 @@
-package entities.SoilTypes;
+package entities.soil_types;
 
 import entities.Soil;
 import lombok.Getter;
 import lombok.Setter;
 
-public class DesertSoil extends Soil {
+public class TundraSoil extends Soil {
     @Getter @Setter
-    private double salinity;
+    private double permafrostDepth;
 
-    public DesertSoil(String name, double mass, double nitrogen, double waterRetention, double solidpH, double organicMatter,  double salinity) {
+    public TundraSoil(String name, double mass, double nitrogen, double waterRetention, double solidpH, double organicMatter, double permafrostDepth) {
         super(name, mass, nitrogen, waterRetention, solidpH, organicMatter);
-        this.salinity = salinity;
+        this.permafrostDepth = permafrostDepth;
     }
-
 
     @Override
     public double calculateQualityScore(){
-        double score = (this.getNitrogen() * 0.5) + (this.getWaterRetention() * 0.3) - (salinity * 2);
+        double score = 	(getNitrogen() * 0.7) + (getOrganicMatter() * 0.5) - (this.permafrostDepth * 1.5);
 
         //normalizare a scorului
         double normalizeScore = Math.max(0, Math.min(100, score));

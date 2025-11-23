@@ -3,7 +3,7 @@ package entities;
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class Entity {
+public class Entity {
     @Getter
     private final String name;
     @Getter @Setter
@@ -13,6 +13,4 @@ public abstract class Entity {
         this.name = name;
         this.mass = mass;
     }
-
-    public abstract double calculateQualityScore();
 }

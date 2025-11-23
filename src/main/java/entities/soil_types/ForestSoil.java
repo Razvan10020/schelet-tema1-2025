@@ -14,12 +14,16 @@ public class ForestSoil extends Soil {
     }
 
     @Override
-    public double calculateQualityScore(){
+    public double SoilQuality(){
         double score = (this.getNitrogen() * 1.2) + (this.getOrganicMatter() * 2) + (this.getWaterRetention() * 1.5) + (this.leafLitter * 0.3);
 
         //normalizare a scorului
         double normalizeScore = Math.max(0, Math.min(100, score));
         //rotunjirea si returnarea scorului
         return Math.round(normalizeScore * 100.0) / 100.0;
+    }
+
+    public double PossibilityToGetStuckInSoil(){
+        return (this.getWaterRetention() * 0.6 + this.leafLitter * 0.4) / 80 * 100;
     }
 }

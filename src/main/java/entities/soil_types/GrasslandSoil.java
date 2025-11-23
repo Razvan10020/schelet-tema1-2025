@@ -14,12 +14,16 @@ public class GrasslandSoil extends Soil {
     }
 
     @Override
-    public double calculateQualityScore(){
+    public double SoilQuality(){
         double score = (this.getNitrogen() * 1.3) + (getOrganicMatter() * 1.5) + (this.rootDensity * 0.8);
 
         //normalizare a scorului
         double normalizeScore = Math.max(0, Math.min(100, score));
         //rotunjirea si returnarea scorului
         return Math.round(normalizeScore * 100.0) / 100.0;
+    }
+
+    public double PossibilityToGetStuckInSoil(){
+        return ((50 - this.rootDensity) + this.getWaterRetention() * 0.5) / 75 * 100;
     }
 }

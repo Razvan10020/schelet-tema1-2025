@@ -14,12 +14,16 @@ public class SwampSoil extends Soil {
     }
 
     @Override
-    public double calculateQualityScore(){
+    public double SoilQuality(){
         double score = (this.getNitrogen() * 1.1) + (this.getOrganicMatter() * 2.2) - (this.waterLogging * 5);
 
         //normalizare a scorului
         double normalizeScore = Math.max(0, Math.min(100, score));
         //rotunjirea si returnarea scorului
         return Math.round(normalizeScore * 100.0) / 100.0;
+    }
+
+    public double PossibilityToGetStuckInSoil(){
+        return 	this.waterLogging * 10;
     }
 }

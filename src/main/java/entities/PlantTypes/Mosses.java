@@ -1,4 +1,4 @@
 package entities.PlantTypes;
 
-public class Moses {
+public class Mosses {
 }

@@ -15,12 +15,16 @@ public class DesertSoil extends Soil {
 
 
     @Override
-    public double calculateQualityScore(){
+    public double SoilQuality(){
         double score = (this.getNitrogen() * 0.5) + (this.getWaterRetention() * 0.3) - (this.salinity * 2);
 
         //normalizare a scorului
         double normalizeScore = Math.max(0, Math.min(100, score));
         //rotunjirea si returnarea scorului
         return Math.round(normalizeScore * 100.0) / 100.0;
+    }
+
+    public double PossibilityToGetStuckInSoil(){
+        return (100 - this.getWaterRetention() + this.salinity) / 100 * 100;
     }
 }

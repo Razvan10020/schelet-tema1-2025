@@ -21,5 +21,6 @@ public abstract class Soil extends Entity {
         this.organicMatter = organicMatter;
     }
 
-    public abstract double calculateQualityScore();
+    public abstract double PossibilityToGetStuckInSoil();
+    public abstract double SoilQuality();
 }

@@ -14,12 +14,16 @@ public class TundraSoil extends Soil {
     }
 
     @Override
-    public double calculateQualityScore(){
+    public double SoilQuality(){
         double score = 	(getNitrogen() * 0.7) + (getOrganicMatter() * 0.5) - (this.permafrostDepth * 1.5);
 
         //normalizare a scorului
         double normalizeScore = Math.max(0, Math.min(100, score));
         //rotunjirea si returnarea scorului
         return Math.round(normalizeScore * 100.0) / 100.0;
+    }
+
+    public double PossibilityToGetStuckInSoil(){
+        return 	(50 - this.permafrostDepth) / 50 * 100;
     }
 }

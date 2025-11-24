@@ -8,6 +8,9 @@ public final class TundraSoil extends Soil {
     private static final double NITRO_WEIGH = 0.7;
     private static final double ORG_MAT_WEIGH = 0.5;
     private static final double PEM_FROST_WEIGH = 1.5;
+    private static final int PROCENTAGE_MULTIPLIER = 100;
+    private static final double ROUNDING_FACTOR = 100.0;
+
     @Getter @Setter
     private double permafrostDepth;
 
@@ -20,20 +23,14 @@ public final class TundraSoil extends Soil {
     }
 
     @Override
-    public double soilQuality() {
+    public double calculateQualityScore() {
         double score = (getNitrogen() * NITRO_WEIGH)
                 + (getOrganicMatter() * ORG_MAT_WEIGH)
                 - (this.permafrostDepth * PEM_FROST_WEIGH);
 
         //normalizare a scorului
-        double normalizeScore = Math.max(0, Math.min(getProcentageMultiplier(), score));
+        double normalizeScore = Math.max(0, Math.min(PROCENTAGE_MULTIPLIER, score));
         //rotunjirea si returnarea scorului
-        return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
+        return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
-
-    /**
-     * Calculates teh possibility yo get stuck in the Tundra Soil
-     * @return
-     */
-    private static final int FIFTY = 50;
 }

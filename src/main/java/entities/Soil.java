@@ -23,8 +23,26 @@ public abstract class Soil extends Entity {
     }
 
     /**
-     * Abstract method that gets overridden by every plant type
+     * Abstract method that gets overridden by every soil type
      * @return
      */
-    public abstract double soilQuality();
+    public abstract double calculateQualityScore();
+
+    private static final int GOOD_QUALITY = 70;
+    private static final int MODERATE_QUALITY = 40;
+
+    /**
+     * Gets the quality of the soil.
+     * @return "good", "moderate", or "poor"
+     */
+    public final String getQuality() {
+        double score = calculateQualityScore();
+        if (score >= GOOD_QUALITY) {
+            return "good";
+        } else if (score >= MODERATE_QUALITY) {
+            return "moderate";
+        } else {
+            return "poor";
+        }
+    }
 }

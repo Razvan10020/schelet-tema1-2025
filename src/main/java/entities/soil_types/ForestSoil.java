@@ -9,6 +9,9 @@ public final class ForestSoil extends Soil {
     private static final double ORG_MAT_WEIGH = 2;
     private static final double H2O_RET_WEIGH = 1.5;
     private static final double LEAF_LIT_WEIGH = 0.3;
+    private static final int PROCENTAGE_MULTIPLIER = 100;
+    private static final double ROUNDING_FACTOR = 100.0;
+
     @Getter @Setter
     private double leafLitter;
 
@@ -21,20 +24,15 @@ public final class ForestSoil extends Soil {
     }
 
     @Override
-    public double soilQuality() {
+    public double calculateQualityScore() {
         double score = (this.getNitrogen() * NITRO_WEIGH)
                 + (this.getOrganicMatter() * ORG_MAT_WEIGH)
                 + (this.getWaterRetention() * H2O_RET_WEIGH)
                 + (this.leafLitter * LEAF_LIT_WEIGH);
 
         //normalizare a scorului
-        double normalizeScore = Math.max(0, Math.min(getProcentageMultiplier(), score));
+        double normalizeScore = Math.max(0, Math.min(PROCENTAGE_MULTIPLIER, score));
         //rotunjirea si returnarea scorului
-        return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
+        return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
-
-    private static final double P_H2O_RET_WEIGH = 0.6;
-    private static final double P_LEAF_LIT_WEIGH = 0.4;
-    private static final double PROCENT = 80;
-
 }

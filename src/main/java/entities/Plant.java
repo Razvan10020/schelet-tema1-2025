@@ -10,12 +10,15 @@ public abstract class Plant extends Entity {
 
     @Getter
     private String status;
+    @Getter
     private double growthRate;
+    @Getter
     private double oxygenFromPlant;
+    @Getter
     private double possibilityToGetStuck;
 
     /**
-     * Constructor for Air entity.
+     * Constructor for Plant entity.
      *
      * @param name the name of the air entity
      * @param mass the mass of the air entity

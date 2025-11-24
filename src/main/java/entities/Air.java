@@ -1,12 +1,17 @@
 package entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public abstract class Air extends Entity {
     private static final int PERCENTAGE_MULTIPLIER = 100;
     private static final double ROUNDING_FACTOR = 100.0;
     private static final double TOXICITY_THRESHOLD = 0.8;
-
+    @Getter @Setter
     private double humidity;
+    @Getter @Setter
     private double temperature;
+    @Getter @Setter
     private double oxygenLevel;
 
     /**
@@ -79,48 +84,21 @@ public abstract class Air extends Entity {
         return humidity;
     }
 
-    /**
-     * Sets the humidity level.
-     *
-     * @param humidity the humidity level to set
-     */
-    public final void setHumidity(final double humidity) {
-        this.humidity = humidity;
-    }
+    private static final int GOOD_QUALITY = 70;
+    private static final int MODERATE_QUALITY = 40;
 
     /**
-     * Gets the temperature.
-     *
-     * @return the temperature
+     * Gets the quality of the air.
+     * @return "good", "moderate", or "poor"
      */
-    public final double getTemperature() {
-        return temperature;
-    }
-
-    /**
-     * Sets the temperature.
-     *
-     * @param temperature the temperature to set
-     */
-    public final void setTemperature(final double temperature) {
-        this.temperature = temperature;
-    }
-
-    /**
-     * Gets the oxygen level.
-     *
-     * @return the oxygen level
-     */
-    public final double getOxygenLevel() {
-        return oxygenLevel;
-    }
-
-    /**
-     * Sets the oxygen level.
-     *
-     * @param oxygenLevel the oxygen level to set
-     */
-    public final void setOxygenLevel(final double oxygenLevel) {
-        this.oxygenLevel = oxygenLevel;
+    public final String getQuality() {
+        double score = calculateQualityScore();
+        if (score >= GOOD_QUALITY) {
+            return "good";
+        } else if (score >= MODERATE_QUALITY) {
+            return "moderate";
+        } else {
+            return "poor";
+        }
     }
 }

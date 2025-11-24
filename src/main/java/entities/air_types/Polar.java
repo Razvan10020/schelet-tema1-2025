@@ -1,11 +1,16 @@
 package entities.air_types;
 
 import entities.Air;
+import lombok.Getter;
+import lombok.Setter;
 
 public final class Polar extends Air {
     private static final double MAX_SCORE = 142;
     private static final double ICE_WEIGH = 0.05;
+    private static final int PROCENTAGE_MULTIPLIER = 100;
+    private static final double ROUNDING_FACTOR = 100.0;
 
+    @Getter
     private double iceCrystalConcentration;
 
     public Polar(final String name, final double mass,
@@ -21,12 +26,12 @@ public final class Polar extends Air {
      */
     public double calculateQualityScore() {
         double score = (getOxygenLevel() * 2)
-                + (getProcentageMultiplier() - Math.abs(getTemperature()))
+                + (PROCENTAGE_MULTIPLIER - Math.abs(getTemperature()))
                 - (this.iceCrystalConcentration * ICE_WEIGH);
         // normalizarea scorului
-        double normalizeScore = Math.max(0, Math.min(getProcentageMultiplier(), score));
+        double normalizeScore = Math.max(0, Math.min(PROCENTAGE_MULTIPLIER, score));
         //rotunjirea scorului
-        return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
+        return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
     /**

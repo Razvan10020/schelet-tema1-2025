@@ -6,9 +6,15 @@ public final class Desert extends Air {
     private static final double MAX_SCORE = 65;
     private static final double FACTOR_FOR_DUST_PARTICLE = 0.2;
     private static final double FACTOR_FOR_TEMP = 0.3;
+    private static final int PROCENTAGE_MULTIPLIER = 100;
+    private static final double ROUNDING_FACTOR = 100.0;
 
     private double dustParticles;
 
+
+    public double getDustParticles() {
+        return dustParticles;
+    }
 
     public Desert(final String name, final double mass,
                   final double humidity, final double temperature,
@@ -23,9 +29,9 @@ public final class Desert extends Air {
                 - (this.dustParticles * FACTOR_FOR_DUST_PARTICLE)
                 - (getTemperature() * FACTOR_FOR_TEMP);
         // normalizarea scorului
-        double normalizeScore = Math.max(0, Math.min(getProcentageMultiplier(), score));
+        double normalizeScore = Math.max(0, Math.min(PROCENTAGE_MULTIPLIER, score));
         //rotunjirea scorului
-        return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
+        return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
     /**

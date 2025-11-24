@@ -1,13 +1,22 @@
 package entities.air_types;
 
 import entities.Air;
+import lombok.Getter;
+import lombok.Setter;
 
 public final class Tropical extends Air {
     private static final double MAX_SCORE = 82;
     private static final double HUMIDITY_WEIGH = 0.5;
     private static final double CO2_WEIGH = 0.01;
+    private static final int PROCENTAGE_MULTIPLIER = 100;
+    private static final double ROUNDING_FACTOR = 100.0;
 
+    @Getter
     private double co2Level;
+
+    public double getCo2Level() {
+        return co2Level;
+    }
 
     public Tropical(final String name, final double mass,
                     final double humidity, final double temperature,
@@ -25,9 +34,9 @@ public final class Tropical extends Air {
                 + (this.getHumidity() * HUMIDITY_WEIGH)
                 - (co2Level * CO2_WEIGH);
         // normalizarea scorului
-        double normalizeScore = Math.max(0, Math.min(getProcentageMultiplier(), score));
+        double normalizeScore = Math.max(0, Math.min(PROCENTAGE_MULTIPLIER, score));
         //rotunjirea scorului
-        return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
+        return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
     /**

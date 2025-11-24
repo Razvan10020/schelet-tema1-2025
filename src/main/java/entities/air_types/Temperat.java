@@ -1,15 +1,18 @@
 package entities.air_types;
 
 import entities.Air;
+import lombok.Getter;
+import lombok.Setter;
 
 public final class Temperat extends Air {
     private static final double MAX_SCORE = 84;
     private static final double HUMIDITY_WEIGH = 0.7;
     private static final double POLLEN_WEIGH = 0.1;
+    private static final int PROCENTAGE_MULTIPLIER = 100;
+    private static final double ROUNDING_FACTOR = 100.0;
 
+    @Getter
     private double pollenLevel;
-
-
 
     public Temperat(final String name, final double mass,
                     final double humidity, final double temperature,
@@ -27,9 +30,9 @@ public final class Temperat extends Air {
                 + (getHumidity() * HUMIDITY_WEIGH)
                 - (this.pollenLevel * POLLEN_WEIGH);
         // normalizarea scorului
-        double normalizeScore = Math.max(0, Math.min(getProcentageMultiplier(), score));
+        double normalizeScore = Math.max(0, Math.min(PROCENTAGE_MULTIPLIER, score));
         //rotunjirea scorului
-        return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
+        return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
     /**

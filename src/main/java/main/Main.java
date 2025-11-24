@@ -3,37 +3,33 @@ package main;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import entities.Air;
 import entities.Animal;
 import entities.Plant;
 import entities.Soil;
 import entities.Water;
-
 import entities.air_types.Desert;
 import entities.air_types.Montan;
 import entities.air_types.Polar;
 import entities.air_types.Temperat;
 import entities.air_types.Tropical;
-
 import entities.animal_types.Carnivore;
 import entities.animal_types.Detritivore;
 import entities.animal_types.Herbivore;
 import entities.animal_types.Omnivore;
 import entities.animal_types.Parasite;
-
 import entities.plant_types.Algae;
 import entities.plant_types.Ferns;
 import entities.plant_types.FloweringPlants;
 import entities.plant_types.GymnospermsPlants;
 import entities.plant_types.Mosses;
-
+import entities.simulation.Simulations;
 import entities.soil_types.DesertSoil;
 import entities.soil_types.ForestSoil;
 import entities.soil_types.GrasslandSoil;
 import entities.soil_types.SwampSoil;
 import entities.soil_types.TundraSoil;
-
 import fileio.AirInput;
 import fileio.AnimalInput;
 import fileio.CommandInput;
@@ -42,7 +38,6 @@ import fileio.PlantInput;
 import fileio.PairInput;
 import fileio.SimulationInput;
 import fileio.SoilInput;
-import fileio.TerritorySectionParamsInput;
 import fileio.WaterInput;
 
 import java.io.File;
@@ -59,26 +54,15 @@ public final class Main {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     public static final ObjectWriter WRITER = MAPPER.writer().withDefaultPrettyPrinter();
 
-    /**
-     * @param inputPath input file path
-     * @param outputPath output file path
-     * @throws IOException when files cannot be loaded.
-     */
-    public static void action(final String inputPath,
-                              final String outputPath) throws IOException {
-
-        InputLoader inputLoader = new InputLoader(inputPath);
-        ArrayNode output = MAPPER.createArrayNode();
-
-        SimulationInput currentSimulation = inputLoader.getSimulations().get(0);
-
+    private static void initializeSimulation(final Simulations simulations,
+                                             final SimulationInput currentSimulation) {
         for (SoilInput soilData : currentSimulation.getTerritorySectionParams().getSoil()) {
-            String name =  soilData.getName();
+            String name = soilData.getName();
             String type = soilData.getType();
 
             Soil soilEntity = null;
             switch (type) {
-                case "ForestSoil" :
+                case "ForestSoil":
                     soilEntity = new ForestSoil(
                             name,
                             soilData.getMass(),
@@ -89,7 +73,7 @@ public final class Main {
                             soilData.getLeafLitter()
                     );
                     break;
-                case "DesertSoil" :
+                case "DesertSoil":
                     soilEntity = new DesertSoil(
                             name,
                             soilData.getMass(),
@@ -100,7 +84,7 @@ public final class Main {
                             soilData.getSalinity()
                     );
                     break;
-                case "GrasslandSoil" :
+                case "GrasslandSoil":
                     soilEntity = new GrasslandSoil(
                             name,
                             soilData.getMass(),
@@ -111,7 +95,7 @@ public final class Main {
                             soilData.getRootDensity()
                     );
                     break;
-                case "SwampSoil" :
+                case "SwampSoil":
                     soilEntity = new SwampSoil(
                             name,
                             soilData.getMass(),
@@ -122,7 +106,7 @@ public final class Main {
                             soilData.getWaterLogging()
                     );
                     break;
-                case "TundraSoil" :
+                case "TundraSoil":
                     soilEntity = new TundraSoil(
                             name,
                             soilData.getMass(),
@@ -133,9 +117,12 @@ public final class Main {
                             soilData.getPermafrostDepth()
                     );
                     break;
-                default :
+                default:
                     System.out.println("Invalid soil input");
                     break;
+            }
+            for (PairInput pair : soilData.getSections()) {
+                simulations.getTerritory().getCell(pair.getX(), pair.getY()).setSoil(soilEntity);
             }
         }
 
@@ -146,7 +133,7 @@ public final class Main {
             Air airEntity = null;
 
             switch (type) {
-                case "DesertAir" :
+                case "DesertAir":
                     airEntity = new Desert(
                             name,
                             airData.getMass(),
@@ -156,7 +143,7 @@ public final class Main {
                             airData.getDustParticles()
                     );
                     break;
-                case "MountainAir" :
+                case "MountainAir":
                     airEntity = new Montan(
                             name,
                             airData.getMass(),
@@ -166,7 +153,7 @@ public final class Main {
                             airData.getAltitude()
                     );
                     break;
-                case "PolarAir" :
+                case "PolarAir":
                     airEntity = new Polar(
                             name,
                             airData.getMass(),
@@ -176,7 +163,7 @@ public final class Main {
                             airData.getIceCrystalConcentration()
                     );
                     break;
-                case "TemperateAir" :
+                case "TemperateAir":
                     airEntity = new Temperat(
                             name,
                             airData.getMass(),
@@ -186,7 +173,7 @@ public final class Main {
                             airData.getPollenLevel()
                     );
                     break;
-                case "TropicalAir" :
+                case "TropicalAir":
                     airEntity = new Tropical(
                             name,
                             airData.getMass(),
@@ -196,9 +183,13 @@ public final class Main {
                             airData.getCo2Level()
                     );
                     break;
-                default :
+                default:
                     System.out.println("Invalid air input");
                     break;
+            }
+
+            for (PairInput pair : airData.getSections()) {
+                simulations.getTerritory().getCell(pair.getX(), pair.getY()).setAir(airEntity);
             }
         }
 
@@ -208,31 +199,31 @@ public final class Main {
 
             Plant plantEntity = null;
             switch (type) {
-                case "Algae" :
+                case "Algae":
                     plantEntity = new Algae(
                             name,
                             plantData.getMass()
                     );
                     break;
-                case "Ferns" :
+                case "Ferns":
                     plantEntity = new Ferns(
                             name,
                             plantData.getMass()
                     );
                     break;
-                case "FloweringPlant" :
+                case "FloweringPlants":
                     plantEntity = new FloweringPlants(
                             name,
                             plantData.getMass()
                     );
                     break;
-                case "GymnospermsPlants" :
+                case "GymnospermsPlants":
                     plantEntity = new GymnospermsPlants(
                             name,
                             plantData.getMass()
                     );
                     break;
-                case "Mosses" :
+                case "Mosses":
                     plantEntity = new Mosses(
                             name,
                             plantData.getMass()
@@ -242,11 +233,13 @@ public final class Main {
                     System.out.println("Invalid plant input");
                     break;
             }
+            for (PairInput pair : plantData.getSections()) {
+                simulations.getTerritory().getCell(pair.getX(), pair.getY()).setPlant(plantEntity);
+            }
         }
 
         for (WaterInput waterData : currentSimulation.getTerritorySectionParams().getWater()) {
             String name = waterData.getName();
-            String type = waterData.getType();
 
             Water waterEntity = new Water(
                     name,
@@ -257,7 +250,10 @@ public final class Main {
                     waterData.getTurbidity(),
                     waterData.getContaminantIndex(),
                     waterData.isFrozen()
-                    );
+            );
+            for (PairInput pair : waterData.getSections()) {
+                simulations.getTerritory().getCell(pair.getX(), pair.getY()).setWater(waterEntity);
+            }
         }
 
         for (AnimalInput animalData : currentSimulation.getTerritorySectionParams().getAnimals()) {
@@ -266,58 +262,98 @@ public final class Main {
 
             Animal animalEntity = null;
             switch (type) {
-                case "Herbivore" :
+                case "Herbivores":
                     animalEntity = new Herbivore(
                             name,
                             animalData.getMass()
                     );
                     break;
-                case "Carnivore" :
+                case "Carnivores":
                     animalEntity = new Carnivore(
                             name,
                             animalData.getMass()
                     );
                     break;
-                case "Detritivore" :
+                case "Detritivores":
                     animalEntity = new Detritivore(
                             name,
                             animalData.getMass()
                     );
                     break;
-                case "Omnivore" :
+                case "Omnivores":
                     animalEntity = new Omnivore(
                             name,
                             animalData.getMass()
                     );
                     break;
-                case "Parasite" :
+                case "Parasites":
                     animalEntity = new Parasite(
                             name,
                             animalData.getMass()
                     );
                     break;
-                default :
+                default:
                     System.out.println("Invalid animal input");
                     break;
             }
+            for (PairInput pair : animalData.getSections()) {
+                simulations.getTerritory().getCell(pair.getX(), pair.getY()).setAnimal(animalEntity);
+            }
         }
-        /*
-         * TODO Implement your function here
-         *
-         * How to add output to the output array?
-         * There are multiple ways to do this, here is one example:
-         *
-         *
-         * ObjectNode objectNode = MAPPER.createObjectNode();
-         * objectNode.put("field_name", "field_value");
-         *
-         * ArrayNode arrayNode = MAPPER.createArrayNode();
-         * arrayNode.add(objectNode);
-         *
-         * output.add(arrayNode);
-         * output.add(objectNode);
-         *
-         */
+    }
+
+
+    /**
+     * @param inputPath  input file path
+     * @param outputPath output file path
+     * @throws IOException when files cannot be loaded.
+     */
+    public static void action(final String inputPath,
+                              final String outputPath) throws IOException {
+
+        InputLoader inputLoader = new InputLoader(inputPath);
+        ArrayNode output = MAPPER.createArrayNode();
+        Simulations simulations = new Simulations();
+
+        for (CommandInput command : inputLoader.getCommands()) {
+            ObjectNode resultNode = MAPPER.createObjectNode();
+            resultNode.put("command", command.getCommand());
+
+            switch (command.getCommand()) {
+                case "startSimulation":
+                    SimulationInput currentSimulation = inputLoader.getSimulations().get(0);
+                    simulations.startSimulation(currentSimulation);
+                    initializeSimulation(simulations, currentSimulation);
+                    resultNode.put("message", "Simulation has started.");
+                    resultNode.put("timestamp", command.getTimestamp());
+                    output.add(resultNode);
+                    break;
+
+                case "endSimulation":
+                    simulations.endSimulation();
+                    resultNode.put("message", "Simulation has ended.");
+                    resultNode.put("timestamp", command.getTimestamp());
+                    output.add(resultNode);
+                    break;
+
+                case "printEnvConditions":
+                    resultNode.set("output", simulations.printEnvConditions());
+                    resultNode.put("timestamp", command.getTimestamp());
+                    output.add(resultNode);
+                    break;
+
+                case "printMap":
+                    resultNode.set("output", simulations.printMap());
+                    resultNode.put("timestamp", command.getTimestamp());
+                    output.add(resultNode);
+                    break;
+
+                default:
+                    resultNode.put("message", "Command processed.");
+                    output.add(resultNode);
+                    break;
+            }
+        }
 
         File outputFile = new File(outputPath);
         outputFile.getParentFile().mkdirs();

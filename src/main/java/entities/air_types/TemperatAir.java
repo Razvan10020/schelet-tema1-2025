@@ -1,33 +1,33 @@
 package entities.air_types;
 
 import entities.Air;
+import lombok.Getter;
 
-public final class Desert extends Air {
-    private static final double MAX_SCORE = 65;
-    private static final double FACTOR_FOR_DUST_PARTICLE = 0.2;
-    private static final double FACTOR_FOR_TEMP = 0.3;
+public final class TemperatAir extends Air {
+    private static final double MAX_SCORE = 84;
+    private static final double HUMIDITY_WEIGH = 0.7;
+    private static final double POLLEN_WEIGH = 0.1;
     private static final int PROCENTAGE_MULTIPLIER = 100;
     private static final double ROUNDING_FACTOR = 100.0;
 
-    private double dustParticles;
+    @Getter
+    private double pollenLevel;
 
-
-    public double getDustParticles() {
-        return dustParticles;
-    }
-
-    public Desert(final String name, final double mass,
-                  final double humidity, final double temperature,
-                  final double oxygenLevel, final double dustParticles) {
+    public TemperatAir(final String name, final double mass,
+                       final double humidity, final double temperature,
+                       final double oxygenLevel, final double pollenLevel) {
         super(name, mass, humidity, temperature, oxygenLevel);
-        this.dustParticles = dustParticles;
+        this.pollenLevel = pollenLevel;
     }
 
-    @Override
+    /**
+     * Calculates the air quality without getting its toxicity
+     * @return
+     */
     public double calculateQualityScore() {
         double score = (getOxygenLevel() * 2)
-                - (this.dustParticles * FACTOR_FOR_DUST_PARTICLE)
-                - (getTemperature() * FACTOR_FOR_TEMP);
+                + (getHumidity() * HUMIDITY_WEIGH)
+                - (this.pollenLevel * POLLEN_WEIGH);
         // normalizarea scorului
         double normalizeScore = Math.max(0, Math.min(PROCENTAGE_MULTIPLIER, score));
         //rotunjirea scorului

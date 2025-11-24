@@ -2,9 +2,8 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
-import lombok.Setter;
 
-public final class Montan extends Air {
+public final class MountainAir extends Air {
     private static final double MAX_SCORE = 78;
     private static final double HUMIDITY_WEIGH = 0.6;
     private static final double ALTITUDE_WEIGH = 0.5;
@@ -15,9 +14,9 @@ public final class Montan extends Air {
     @Getter
     private double altitude;
 
-    public Montan(final String name, final double mass,
-                  final double humidity, final double temperature,
-                  final double oxygenLevel, final double altitude) {
+    public MountainAir(final String name, final double mass,
+                       final double humidity, final double temperature,
+                       final double oxygenLevel, final double altitude) {
         super(name, mass, humidity, temperature, oxygenLevel);
         this.altitude = altitude;
     }

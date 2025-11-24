@@ -9,11 +9,11 @@ import entities.Animal;
 import entities.Plant;
 import entities.Soil;
 import entities.Water;
-import entities.air_types.Desert;
-import entities.air_types.Montan;
-import entities.air_types.Polar;
-import entities.air_types.Temperat;
-import entities.air_types.Tropical;
+import entities.air_types.DesertAir;
+import entities.air_types.MountainAir;
+import entities.air_types.PolarAir;
+import entities.air_types.TemperatAir;
+import entities.air_types.TropicalAir;
 import entities.animal_types.Carnivore;
 import entities.animal_types.Detritivore;
 import entities.animal_types.Herbivore;
@@ -134,7 +134,7 @@ public final class Main {
 
             switch (type) {
                 case "DesertAir":
-                    airEntity = new Desert(
+                    airEntity = new DesertAir(
                             name,
                             airData.getMass(),
                             airData.getHumidity(),
@@ -144,7 +144,7 @@ public final class Main {
                     );
                     break;
                 case "MountainAir":
-                    airEntity = new Montan(
+                    airEntity = new MountainAir(
                             name,
                             airData.getMass(),
                             airData.getHumidity(),
@@ -154,7 +154,7 @@ public final class Main {
                     );
                     break;
                 case "PolarAir":
-                    airEntity = new Polar(
+                    airEntity = new PolarAir(
                             name,
                             airData.getMass(),
                             airData.getHumidity(),
@@ -164,7 +164,7 @@ public final class Main {
                     );
                     break;
                 case "TemperateAir":
-                    airEntity = new Temperat(
+                    airEntity = new TemperatAir(
                             name,
                             airData.getMass(),
                             airData.getHumidity(),
@@ -174,7 +174,7 @@ public final class Main {
                     );
                     break;
                 case "TropicalAir":
-                    airEntity = new Tropical(
+                    airEntity = new TropicalAir(
                             name,
                             airData.getMass(),
                             airData.getHumidity(),
@@ -321,35 +321,56 @@ public final class Main {
 
             switch (command.getCommand()) {
                 case "startSimulation":
-                    SimulationInput currentSimulation = inputLoader.getSimulations().get(0);
-                    simulations.startSimulation(currentSimulation);
-                    initializeSimulation(simulations, currentSimulation);
-                    resultNode.put("message", "Simulation has started.");
-                    resultNode.put("timestamp", command.getTimestamp());
+                    if (simulations.isSimulationStarted()) {
+                        resultNode.put("message",
+                                "ERROR: Simulation already started. Cannot perform action");
+                        resultNode.put("timestamp", command.getTimestamp());
+                    } else {
+                        SimulationInput currentSimulation = inputLoader.getSimulations().get(0);
+                        simulations.startSimulation(currentSimulation);
+                        initializeSimulation(simulations, currentSimulation);
+                        resultNode.put("message", "Simulation has started.");
+                        resultNode.put("timestamp", command.getTimestamp());
+                    }
                     output.add(resultNode);
                     break;
-
                 case "endSimulation":
-                    simulations.endSimulation();
-                    resultNode.put("message", "Simulation has ended.");
-                    resultNode.put("timestamp", command.getTimestamp());
+                    if (!simulations.isSimulationStarted()) {
+                        resultNode.put("message",
+                                "ERROR: Simulation not started. Cannot perform action");
+                        resultNode.put("timestamp", command.getTimestamp());
+                    } else {
+                        simulations.endSimulation();
+                        resultNode.put("message", "Simulation has ended.");
+                        resultNode.put("timestamp", command.getTimestamp());
+                    }
                     output.add(resultNode);
                     break;
-
                 case "printEnvConditions":
-                    resultNode.set("output", simulations.printEnvConditions());
-                    resultNode.put("timestamp", command.getTimestamp());
+                    if (!simulations.isSimulationStarted()) {
+                        resultNode.put("message",
+                                "ERROR: Simulation not started. Cannot perform action");
+                        resultNode.put("timestamp", command.getTimestamp());
+                    } else {
+                        resultNode.set("output", simulations.printEnvConditions());
+                        resultNode.put("timestamp", command.getTimestamp());
+                    }
                     output.add(resultNode);
                     break;
-
                 case "printMap":
-                    resultNode.set("output", simulations.printMap());
-                    resultNode.put("timestamp", command.getTimestamp());
+                    if (!simulations.isSimulationStarted()) {
+                        resultNode.put("message",
+                                "ERROR: Simulation not started. Cannot perform action");
+                        resultNode.put("timestamp", command.getTimestamp());
+                    } else {
+                        resultNode.set("output", simulations.printMap());
+                        resultNode.put("timestamp", command.getTimestamp());
+                    }
                     output.add(resultNode);
                     break;
-
                 default:
-                    resultNode.put("message", "Command processed.");
+                    resultNode.put("message", "ERROR: Invalid command");
+                    resultNode.put("timestamp", command.getTimestamp());
                     output.add(resultNode);
                     break;
             }

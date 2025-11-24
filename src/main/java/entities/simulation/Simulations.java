@@ -9,11 +9,11 @@ import entities.Plant;
 import entities.Soil;
 import entities.TerraBot;
 import entities.Water;
-import entities.air_types.Desert;
-import entities.air_types.Montan;
-import entities.air_types.Polar;
-import entities.air_types.Temperat;
-import entities.air_types.Tropical;
+import entities.air_types.DesertAir;
+import entities.air_types.MountainAir;
+import entities.air_types.PolarAir;
+import entities.air_types.TemperatAir;
+import entities.air_types.TropicalAir;
 import entities.soil_types.DesertSoil;
 import entities.soil_types.ForestSoil;
 import entities.soil_types.GrasslandSoil;
@@ -139,23 +139,23 @@ public class Simulations {
         Air air = currentCell.getAir();
         if (air != null) {
             ObjectNode airNode = MAPPER.createObjectNode();
-            airNode.put("type", air.getClass().getSimpleName().replace("Temperat", "TemperateAir").replace("Montan", "MountainAir"));
+            airNode.put("type", air.getClass().getSimpleName());
             airNode.put("name", air.getName());
             airNode.put("mass", air.getMass());
             airNode.put("humidity", air.getHumidity());
             airNode.put("temperature", air.getTemperature());
             airNode.put("oxygenLevel", air.getOxygenLevel());
             airNode.put("airQuality", air.calculateQualityScore());
-            if (air instanceof Temperat) {
-                airNode.put("pollenLevel", ((Temperat) air).getPollenLevel());
-            } else if (air instanceof Desert) {
-                airNode.put("dustParticles", ((Desert) air).getDustParticles());
-            } else if (air instanceof Montan) {
-                airNode.put("altitude", ((Montan) air).getAltitude());
-            } else if (air instanceof Polar) {
-                airNode.put("iceCrystalConcentration", ((Polar) air).getIceCrystalConcentration());
-            } else if (air instanceof Tropical) {
-                airNode.put("co2Level", ((Tropical) air).getCo2Level());
+            if (air instanceof TemperatAir) {
+                airNode.put("pollenLevel", ((TemperatAir) air).getPollenLevel());
+            } else if (air instanceof DesertAir) {
+                airNode.put("dustParticles", ((DesertAir) air).getDustParticles());
+            } else if (air instanceof MountainAir) {
+                airNode.put("altitude", ((MountainAir) air).getAltitude());
+            } else if (air instanceof PolarAir) {
+                airNode.put("iceCrystalConcentration", ((PolarAir) air).getIceCrystalConcentration());
+            } else if (air instanceof TropicalAir) {
+                airNode.put("co2Level", ((TropicalAir) air).getCo2Level());
             }
             cellNode.set("air", airNode);
         }

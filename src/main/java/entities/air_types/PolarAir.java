@@ -2,9 +2,8 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
-import lombok.Setter;
 
-public final class Polar extends Air {
+public final class PolarAir extends Air {
     private static final double MAX_SCORE = 142;
     private static final double ICE_WEIGH = 0.05;
     private static final int PROCENTAGE_MULTIPLIER = 100;
@@ -13,9 +12,9 @@ public final class Polar extends Air {
     @Getter
     private double iceCrystalConcentration;
 
-    public Polar(final String name, final double mass,
-                 final double humidity, final double temperature,
-                 final double oxygenLevel, final double iceCrystalConcentration) {
+    public PolarAir(final String name, final double mass,
+                    final double humidity, final double temperature,
+                    final double oxygenLevel, final double iceCrystalConcentration) {
         super(name, mass, humidity, temperature, oxygenLevel);
         this.iceCrystalConcentration = iceCrystalConcentration;
     }

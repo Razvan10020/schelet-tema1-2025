@@ -1,30 +1,33 @@
 package entities.air_types;
 
 import entities.Air;
-import lombok.Getter;
-import lombok.Setter;
 
-public class Tropical extends Air {
-    @Getter @Setter
+public final class Tropical extends Air {
+    private static final double MAX_SCORE = 82;
+    private static final double HUMIDITY_WEIGH = 0.5;
+    private static final double CO2_WEIGH = 0.01;
+
     private double co2Level;
-    private final static double maxScore = 82;
 
-
-    public Tropical(String name, double mass, double humidity, double temperature,double oxygenLevel, double co2Level) {
+    public Tropical(final String name, final double mass,
+                    final double humidity, final double temperature,
+                    final double oxygenLevel, final double co2Level) {
         super(name, mass, humidity, temperature, oxygenLevel);
         this.co2Level = co2Level;
     }
 
-    public double calculateQualityScore(){
-        double score = (this.getOxygenLevel()*2) + (this.getHumidity()*0.5) - (co2Level*0.01);
+    public double calculateQualityScore() {
+        double score = (this.getOxygenLevel() * 2)
+                + (this.getHumidity() * HUMIDITY_WEIGH)
+                - (co2Level * CO2_WEIGH);
         // normalizarea scorului
-        double normalizeScore = Math.max(0, Math.min(100, score));
+        double normalizeScore = Math.max(0, Math.min(getProcentageMultiplier(), score));
         //rotunjirea scorului
-        return Math.round(normalizeScore * 100.0) / 100.0;
+        return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
     }
 
     @Override
-    public double getMaxScore(){
-        return maxScore;
+    public double getMaxScore() {
+        return MAX_SCORE;
     }
 }

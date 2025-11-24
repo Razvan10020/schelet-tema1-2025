@@ -1,30 +1,32 @@
 package entities.air_types;
 
 import entities.Air;
-import lombok.Getter;
-import lombok.Setter;
 
-public class Polar extends Air {
-    @Getter @Setter
+public final class Polar extends Air {
+    private static final double MAX_SCORE = 142;
+    private static final double ICE_WEIGH = 0.05;
+
     private double iceCrystalConcentration;
-    private final static double maxScore = 142;
 
-
-    public Polar(String name, double mass, double humidity, double temperature,double oxygenLevel, double iceCrystalConcentration) {
+    public Polar(final String name, final double mass,
+                 final double humidity, final double temperature,
+                 final double oxygenLevel, final double iceCrystalConcentration) {
         super(name, mass, humidity, temperature, oxygenLevel);
         this.iceCrystalConcentration = iceCrystalConcentration;
     }
 
-    public double calculateQualityScore(){
-        double score = (getOxygenLevel()*2) + (100-Math.abs(getTemperature())) - (this.iceCrystalConcentration*0.05);
+    public double calculateQualityScore() {
+        double score = (getOxygenLevel() * 2)
+                + (getProcentageMultiplier() - Math.abs(getTemperature()))
+                - (this.iceCrystalConcentration * ICE_WEIGH);
         // normalizarea scorului
-        double normalizeScore = Math.max(0, Math.min(100, score));
+        double normalizeScore = Math.max(0, Math.min(getProcentageMultiplier(), score));
         //rotunjirea scorului
-        return Math.round(normalizeScore * 100.0) / 100.0;
+        return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
     }
 
     @Override
-    public double getMaxScore(){
-        return maxScore;
+    public double getMaxScore() {
+        return MAX_SCORE;
     }
 }

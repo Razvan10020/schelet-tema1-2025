@@ -1,19 +1,14 @@
 package entities;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public abstract class Soil extends Entity {
-    @Getter
     private double nitrogen;
-    @Getter
     private double waterRetention;
-    @Getter
     private double soilpH;
-    @Getter
     private double organicMatter;
 
-    public Soil(final String name, double mass, double nitrogen, double waterRetention, double soilpH, double organicMatter) {
+    public Soil(final String name, final double mass, final double nitrogen,
+                final double waterRetention, final double soilpH,
+                final double organicMatter) {
         super(name, mass);
         this.nitrogen = nitrogen;
         this.waterRetention = waterRetention;
@@ -23,4 +18,20 @@ public abstract class Soil extends Entity {
 
     public abstract double PossibilityToGetStuckInSoil();
     public abstract double SoilQuality();
+
+    public double getNitrogen() {
+        return nitrogen;
+    }
+
+    public double getWaterRetention() {
+        return waterRetention;
+    }
+
+    public double getSoilpH() {
+        return soilpH;
+    }
+
+    public double getOrganicMatter() {
+        return organicMatter;
+    }
 }

@@ -7,10 +7,21 @@ public class Entity {
     @Getter
     private final String name;
     @Getter @Setter
-    private double mass;
+    private final double mass;
 
-    public Entity(final String name, double mass) {
+    private static final int PERCENTAGE_MULTIPLIER = 100;
+    private static final double ROUNDING_FACTOR = 100.0;
+
+    public Entity(final String name, final double mass) {
         this.name = name;
         this.mass = mass;
+    }
+
+    public int getProcentageMultiplier() {
+        return PERCENTAGE_MULTIPLIER;
+    }
+
+    public double getRoundingFactor() {
+        return ROUNDING_FACTOR;
     }
 }

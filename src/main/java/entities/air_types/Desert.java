@@ -1,30 +1,35 @@
 package entities.air_types;
 
 import entities.Air;
-import lombok.Getter;
-import lombok.Setter;
 
-public class Desert extends Air {
-    @Getter @Setter
+public final class Desert extends Air {
+    private static final double MAX_SCORE = 65;
+    private static final double FACTOR_FOR_DUST_PARTICLE = 0.2;
+    private static final double FACTOR_FOR_TEMP = 0.3;
+
     private double dustParticles;
-    private final static double maxScore = 65;
 
-    public Desert(String name, double mass, double humidity, double temperature, double oxygenLevel, double dustParticles) {
+
+    public Desert(final String name, final double mass,
+                  final double humidity, final double temperature,
+                  final double oxygenLevel, final double dustParticles) {
         super(name, mass, humidity, temperature, oxygenLevel);
         this.dustParticles = dustParticles;
     }
 
     @Override
-    public double calculateQualityScore(){
-        double score = (getOxygenLevel()*2) - (this.dustParticles*0.2) - (getTemperature()*0.3);
+    public double calculateQualityScore() {
+        double score = (getOxygenLevel() * 2)
+                - (this.dustParticles * FACTOR_FOR_DUST_PARTICLE)
+                - (getTemperature() * FACTOR_FOR_TEMP);
         // normalizarea scorului
-        double normalizeScore = Math.max(0, Math.min(100, score));
+        double normalizeScore = Math.max(0, Math.min(getProcentageMultiplier(), score));
         //rotunjirea scorului
-        return Math.round(normalizeScore * 100.0) / 100.0;
+        return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
     }
 
     @Override
-    public double getMaxScore(){
-        return maxScore;
+    public double getMaxScore() {
+        return MAX_SCORE;
     }
 }

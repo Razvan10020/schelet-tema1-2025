@@ -21,7 +21,7 @@ public final class DesertSoil extends Soil {
 
 
     @Override
-    public double SoilQuality() {
+    public double soilQuality() {
         double score = (this.getNitrogen() * NITRO_WEIGH)
                 + (this.getWaterRetention() * H20_RET_WEIGH)
                 - (this.salinity * 2);
@@ -32,7 +32,4 @@ public final class DesertSoil extends Soil {
         return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
     }
 
-    public double PossibilityToGetStuckInSoil() {
-        return (getProcentageMultiplier() - this.getWaterRetention() + this.salinity) / getProcentageMultiplier() * getRoundingFactor();
-    }
 }

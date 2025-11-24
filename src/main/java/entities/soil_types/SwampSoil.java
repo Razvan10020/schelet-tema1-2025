@@ -21,7 +21,7 @@ public final class SwampSoil extends Soil {
     }
 
     @Override
-    public double SoilQuality() {
+    public double soilQuality() {
         double score = (this.getNitrogen() * NITRO_WEIGH)
                 + (this.getOrganicMatter() * ORG_MAT_WEIGH)
                 - (this.waterLogging * H2O_LOGG_WEIGH);
@@ -32,7 +32,4 @@ public final class SwampSoil extends Soil {
         return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
     }
 
-    public double PossibilityToGetStuckInSoil() {
-        return 	this.waterLogging * 10;
-    }
 }

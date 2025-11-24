@@ -18,6 +18,10 @@ public final class Temperat extends Air {
         this.pollenLevel = pollenLevel;
     }
 
+    /**
+     * Calculates the air quality without getting its toxicity
+     * @return
+     */
     public double calculateQualityScore() {
         double score = (getOxygenLevel() * 2)
                 + (getHumidity() * HUMIDITY_WEIGH)
@@ -28,6 +32,10 @@ public final class Temperat extends Air {
         return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
     }
 
+    /**
+     * Gets the max score of said subclass so it can be sent to Air class
+     * @return
+     */
     @Override
     public double getMaxScore() {
         return MAX_SCORE;

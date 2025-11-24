@@ -4,8 +4,6 @@ import entities.Soil;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Period;
-
 public final class TundraSoil extends Soil {
     private static final double NITRO_WEIGH = 0.7;
     private static final double ORG_MAT_WEIGH = 0.5;
@@ -22,8 +20,8 @@ public final class TundraSoil extends Soil {
     }
 
     @Override
-    public double SoilQuality() {
-        double score = 	(getNitrogen() * NITRO_WEIGH)
+    public double soilQuality() {
+        double score = (getNitrogen() * NITRO_WEIGH)
                 + (getOrganicMatter() * ORG_MAT_WEIGH)
                 - (this.permafrostDepth * PEM_FROST_WEIGH);
 
@@ -38,7 +36,4 @@ public final class TundraSoil extends Soil {
      * @return
      */
     private static final int FIFTY = 50;
-    public double PossibilityToGetStuckInSoil() {
-        return 	(FIFTY - this.permafrostDepth) / FIFTY * getProcentageMultiplier();
-    }
 }

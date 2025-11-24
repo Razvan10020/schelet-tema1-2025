@@ -17,10 +17,18 @@ public class Entity {
         this.mass = mass;
     }
 
+    /**
+     * Gets the variable equal to 100
+     * @return
+     */
     public int getProcentageMultiplier() {
         return PERCENTAGE_MULTIPLIER;
     }
 
+    /**
+     * Gets the variable equal to 100.0
+     * @return
+     */
     public double getRoundingFactor() {
         return ROUNDING_FACTOR;
     }

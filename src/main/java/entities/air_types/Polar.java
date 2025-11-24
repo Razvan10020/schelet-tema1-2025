@@ -15,6 +15,10 @@ public final class Polar extends Air {
         this.iceCrystalConcentration = iceCrystalConcentration;
     }
 
+    /**
+     * Calculates the air quality without getting its toxicity
+     * @return
+     */
     public double calculateQualityScore() {
         double score = (getOxygenLevel() * 2)
                 + (getProcentageMultiplier() - Math.abs(getTemperature()))
@@ -25,6 +29,10 @@ public final class Polar extends Air {
         return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
     }
 
+    /**
+     * Gets the max score of said subclass so it can be sent to Air class
+     * @return
+     */
     @Override
     public double getMaxScore() {
         return MAX_SCORE;

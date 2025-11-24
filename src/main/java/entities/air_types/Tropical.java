@@ -16,6 +16,10 @@ public final class Tropical extends Air {
         this.co2Level = co2Level;
     }
 
+    /**
+     * Calculates the air quality without getting its toxicity
+     * @return
+     */
     public double calculateQualityScore() {
         double score = (this.getOxygenLevel() * 2)
                 + (this.getHumidity() * HUMIDITY_WEIGH)
@@ -26,6 +30,10 @@ public final class Tropical extends Air {
         return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
     }
 
+    /**
+     * Gets the max score of said subclass so it can be sent to Air class
+     * @return
+     */
     @Override
     public double getMaxScore() {
         return MAX_SCORE;

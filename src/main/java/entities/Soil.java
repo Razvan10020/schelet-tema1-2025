@@ -1,9 +1,15 @@
 package entities;
 
+import lombok.Getter;
+
 public abstract class Soil extends Entity {
+    @Getter
     private double nitrogen;
+    @Getter
     private double waterRetention;
+    @Getter
     private double soilpH;
+    @Getter
     private double organicMatter;
 
     public Soil(final String name, final double mass, final double nitrogen,
@@ -16,22 +22,9 @@ public abstract class Soil extends Entity {
         this.organicMatter = organicMatter;
     }
 
-    public abstract double PossibilityToGetStuckInSoil();
-    public abstract double SoilQuality();
-
-    public double getNitrogen() {
-        return nitrogen;
-    }
-
-    public double getWaterRetention() {
-        return waterRetention;
-    }
-
-    public double getSoilpH() {
-        return soilpH;
-    }
-
-    public double getOrganicMatter() {
-        return organicMatter;
-    }
+    /**
+     * Abstract method that gets overridden by every plant type
+     * @return
+     */
+    public abstract double soilQuality();
 }

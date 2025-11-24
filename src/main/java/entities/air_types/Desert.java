@@ -28,6 +28,10 @@ public final class Desert extends Air {
         return Math.round(normalizeScore * getRoundingFactor()) / getRoundingFactor();
     }
 
+    /**
+     * Gets the max score of said subclass so it can be sent to Air class
+     * @return
+     */
     @Override
     public double getMaxScore() {
         return MAX_SCORE;

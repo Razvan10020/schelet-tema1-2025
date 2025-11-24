@@ -21,7 +21,7 @@ public final class GrasslandSoil extends Soil {
     }
 
     @Override
-    public double SoilQuality() {
+    public double soilQuality() {
         double score = (this.getNitrogen() * NITRO_WEIGH)
                 + (getOrganicMatter() * ORG_MAT_WEIGH)
                 + (this.rootDensity * ROOT_DEN_WEIGH);
@@ -35,8 +35,4 @@ public final class GrasslandSoil extends Soil {
     private static final int SEVEN_FIVE = 75;
     private static final int FIFTY = 50;
     private static final double H2O_RET_WEIGH = 0.5;
-    public double PossibilityToGetStuckInSoil() {
-        return ((FIFTY - this.rootDensity) + this.getWaterRetention() * H2O_RET_WEIGH)
-                / SEVEN_FIVE * getProcentageMultiplier();
-    }
 }

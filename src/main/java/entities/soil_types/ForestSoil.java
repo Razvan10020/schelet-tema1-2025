@@ -21,7 +21,7 @@ public final class ForestSoil extends Soil {
     }
 
     @Override
-    public double SoilQuality() {
+    public double soilQuality() {
         double score = (this.getNitrogen() * NITRO_WEIGH)
                 + (this.getOrganicMatter() * ORG_MAT_WEIGH)
                 + (this.getWaterRetention() * H2O_RET_WEIGH)
@@ -37,8 +37,4 @@ public final class ForestSoil extends Soil {
     private static final double P_LEAF_LIT_WEIGH = 0.4;
     private static final double PROCENT = 80;
 
-    public double PossibilityToGetStuckInSoil() {
-        return (this.getWaterRetention() * P_H2O_RET_WEIGH + this.leafLitter * P_LEAF_LIT_WEIGH)
-                / PROCENT * getProcentageMultiplier();
-    }
 }

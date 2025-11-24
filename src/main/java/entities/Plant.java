@@ -31,6 +31,10 @@ public abstract class Plant extends Entity {
         this.possibilityToGetStuck = possibilityToGetStuck;
     }
 
+    /**
+     * returns the updates status of the plant
+     * @return
+     */
     public String updateMaturity() {
         if (this.growthRate >= 1.0) {
             this.growthRate = 0.0;
@@ -52,6 +56,10 @@ public abstract class Plant extends Entity {
         return this.status;
     }
 
+    /**
+     * Gets the oxygen rate that correlates to the status of the plant
+     * @return
+     */
     public double getMaturityOxigenRate() {
         return switch (getStatus()) {
             case "young" -> OXY_PS_Y;
@@ -61,11 +69,19 @@ public abstract class Plant extends Entity {
         };
     }
 
+    /**
+     * Gets the total oxygen that a plant will generate
+     * @return
+     */
     public double getTotalOxygenFromPlant() {
         return this.oxygenFromPlant + getMaturityOxigenRate();
     }
 
-    public double PossibilityToGetStuckInPlants() {
+    /**
+     * Gets the possibility of the robot to get stuck in plants
+     * @return
+     */
+    public double possibilityToGetStuckInPlants() {
         return this.possibilityToGetStuck;
     }
 }

@@ -173,7 +173,7 @@ public class Simulations {
 
         for (int i = 0; i < territory.getRows(); i++) {
             for (int j = 0; j < territory.getCols(); j++) {
-                Cell cell = territory.getCell(j, i);
+                Cell cell = territory.getCell(i, j);
                 ObjectNode cellInfo = MAPPER.createObjectNode();
                 ArrayNode section = MAPPER.createArrayNode();
                 section.add(j);
@@ -194,5 +194,48 @@ public class Simulations {
         }
 
         return mapNode;
+    }
+
+    public String moveRobot() {
+        int x = teraBot.getX();
+        int y = teraBot.getY();
+
+        int bestScore = Integer.MAX_VALUE;
+        int bestX = -1;
+        int bestY = -1;
+
+        // Order: up, right, down, left
+        int[] dx = {1, 0, -1, 0};
+        int[] dy = {0, 1, 0, 1};
+
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            if (nx >= 0 && nx < territory.getCols() && ny >= 0 && ny < territory.getRows()) {
+                Cell neighborCell = territory.getCell(ny, nx);
+                if (neighborCell != null) {
+                    int currentScore = neighborCell.getQuality();
+                    if (currentScore < bestScore) {
+                        bestScore = currentScore;
+                        bestX = nx;
+                        bestY = ny;
+                    }
+                }
+            }
+        }
+
+        if (bestX != -1) { // A valid destination was found
+            if (teraBot.getEnergy() >= bestScore) {
+                teraBot.setEnergy(teraBot.getEnergy() - bestScore);
+                teraBot.setX(bestX);
+                teraBot.setY(bestY);
+                return "The robot has successfully moved to position (" + bestX + ", " + bestY + ").";
+            } else {
+                return "ERROR: Not enough battery left. Cannot perform action";
+            }
+        }
+
+        return "ERROR: Cannot move to any adjacent cell.";
     }
 }

@@ -122,7 +122,7 @@ public final class Main {
                     break;
             }
             for (PairInput pair : soilData.getSections()) {
-                simulations.getTerritory().getCell(pair.getX(), pair.getY()).setSoil(soilEntity);
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setSoil(soilEntity);
             }
         }
 
@@ -189,7 +189,7 @@ public final class Main {
             }
 
             for (PairInput pair : airData.getSections()) {
-                simulations.getTerritory().getCell(pair.getX(), pair.getY()).setAir(airEntity);
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setAir(airEntity);
             }
         }
 
@@ -234,7 +234,7 @@ public final class Main {
                     break;
             }
             for (PairInput pair : plantData.getSections()) {
-                simulations.getTerritory().getCell(pair.getX(), pair.getY()).setPlant(plantEntity);
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setPlant(plantEntity);
             }
         }
 
@@ -252,7 +252,7 @@ public final class Main {
                     waterData.isFrozen()
             );
             for (PairInput pair : waterData.getSections()) {
-                simulations.getTerritory().getCell(pair.getX(), pair.getY()).setWater(waterEntity);
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setWater(waterEntity);
             }
         }
 
@@ -297,7 +297,7 @@ public final class Main {
                     break;
             }
             for (PairInput pair : animalData.getSections()) {
-                simulations.getTerritory().getCell(pair.getX(), pair.getY()).setAnimal(animalEntity);
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setAnimal(animalEntity);
             }
         }
     }
@@ -366,6 +366,11 @@ public final class Main {
                         resultNode.set("output", simulations.printMap());
                         resultNode.put("timestamp", command.getTimestamp());
                     }
+                    output.add(resultNode);
+                    break;
+                case "moveRobot":
+                    resultNode.put("message", simulations.moveRobot());
+                    resultNode.put("timestamp", command.getTimestamp());
                     output.add(resultNode);
                     break;
                 default:

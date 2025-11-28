@@ -48,4 +48,42 @@ public class Cell {
         }
         return count;
     }
+
+    /**
+     * Gets the Quality score of the cell
+     * @return
+     */
+    public int getQuality() {
+        double sum = 0;
+        int count = 0;
+
+        if (soil != null) {
+            double score = soil.getDamageScore();
+            sum += score;
+            count++;
+        }
+        if (air != null) {
+            double score = air.possibilityToGetDamagedByAir();
+            sum += score;
+            count++;
+        }
+        if (plant != null) {
+            double score = plant.getPossibilityToGetStuck() / 100.0;
+            sum += score;
+            count++;
+        }
+        if (animal != null) {
+            double score = (100 - animal.getAttackChance()) / 10.0;
+            sum += score;
+            count++;
+        }
+
+        if (count == 0) {
+            return 0;
+        }
+
+        double mean = Math.abs(sum / count);
+        int result = (int) Math.round(mean);
+        return result;
+    }
 }

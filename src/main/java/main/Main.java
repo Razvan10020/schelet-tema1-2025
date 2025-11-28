@@ -369,8 +369,14 @@ public final class Main {
                     output.add(resultNode);
                     break;
                 case "moveRobot":
-                    resultNode.put("message", simulations.moveRobot());
-                    resultNode.put("timestamp", command.getTimestamp());
+                    if (!simulations.isSimulationStarted()) {
+                        resultNode.put("message",
+                                "ERROR: Simulation not started. Cannot perform action");
+                        resultNode.put("timestamp", command.getTimestamp());
+                    } else {
+                        resultNode.put("message", simulations.moveRobot());
+                        resultNode.put("timestamp", command.getTimestamp());
+                    }
                     output.add(resultNode);
                     break;
                 default:

@@ -33,6 +33,10 @@ public final class PolarAir extends Air {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
+    public void applyPolarStorm(double windSpeed) {
+        setNewQuality(getNewQuality() - (windSpeed * 0.2));
+    }
+
     /**
      * Gets the max score of said subclass so it can be sent to Air class
      * @return

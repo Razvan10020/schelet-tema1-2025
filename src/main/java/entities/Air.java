@@ -13,6 +13,8 @@ public abstract class Air extends Entity {
     private double temperature;
     @Getter @Setter
     private double oxygenLevel;
+    @Getter @Setter
+    private double newQuality;
 
     /**
      * Constructor for Air entity.
@@ -93,6 +95,7 @@ public abstract class Air extends Entity {
      */
     public final String getQuality() {
         double score = calculateQualityScore();
+        this.newQuality = score;
         if (score >= GOOD_QUALITY) {
             return "good";
         } else if (score >= MODERATE_QUALITY) {

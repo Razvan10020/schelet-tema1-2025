@@ -2,6 +2,7 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
+import lombok.Setter;
 
 public final class TropicalAir extends Air {
     private static final double MAX_SCORE = 82;
@@ -12,7 +13,8 @@ public final class TropicalAir extends Air {
 
     @Getter
     private double co2Level;
-
+    @Getter @Setter
+    private double rainfall;
     public double getCo2Level() {
         return co2Level;
     }
@@ -22,6 +24,7 @@ public final class TropicalAir extends Air {
                        final double oxygenLevel, final double co2Level) {
         super(name, mass, humidity, temperature, oxygenLevel);
         this.co2Level = co2Level;
+        this.rainfall = 0.0;
     }
 
     /**
@@ -36,6 +39,10 @@ public final class TropicalAir extends Air {
         double normalizeScore = Math.max(0, Math.min(PROCENTAGE_MULTIPLIER, score));
         //rotunjirea scorului
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+    }
+
+    public void applyRainfall(double rainfall) {
+        setNewQuality(getNewQuality() + (rainfall * 0.3));
     }
 
     /**

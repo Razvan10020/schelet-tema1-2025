@@ -32,6 +32,10 @@ public final class MountainAir extends Air {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
+    public void updateWeather(int numberOfHikers) {
+        setNewQuality(getNewQuality() - (numberOfHikers * 0.1));
+    }
+
     /**
      * Gets the max score of said subclass so it can be sent to Air class
      * @return

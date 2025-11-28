@@ -15,6 +15,7 @@ import entities.soil_types.ForestSoil;
 import entities.soil_types.GrasslandSoil;
 import entities.soil_types.SwampSoil;
 import entities.soil_types.TundraSoil;
+import fileio.CommandInput;
 import fileio.SimulationInput;
 import fileio.WaterInput;
 import lombok.Getter;
@@ -257,4 +258,68 @@ public class Simulations {
         }
         else return "Robot is fully charged";
     }
+
+    public String changeWeatherConditions(CommandInput command) {
+        boolean weatherChanged = false;
+
+        for (int i = 0; i < territory.getRows(); i++) {
+            for (int j = 0; j < territory.getCols(); j++) {
+
+                Air air = territory.getCell(i, j).getAir();
+                if (air != null) {
+
+                    switch (command.getType()) {
+
+                        case "rainfall":
+                            if (air instanceof TropicalAir) {
+                                ((TropicalAir) air).applyRainfall(command.getRainfall());
+                                weatherChanged = true;
+                            }
+                            break;
+
+                        case "polarStorm":
+                            if (air instanceof PolarAir) {
+                                ((PolarAir) air).applyPolarStorm(command.getWindSpeed());
+                                weatherChanged = true;
+                            }
+                            break;
+
+                        case "newSeason":
+                            // ai o gresala in cod: TemperatAir → TemperateAir?
+                            if (air instanceof TemperateAir) {
+                                ((TemperateAir) air).applyNewSeason(command.getSeason());
+                                weatherChanged = true;
+                            }
+                            break;
+
+                        case "desertStorm":
+                            if (air instanceof DesertAir) {
+                                ((DesertAir) air).setDesertStorm(
+                                        command.isDesertStorm(),
+                                        command.getTimestamp()
+                                );
+                                weatherChanged = true;
+                            }
+                            break;
+
+                        case "peopleHiking":
+                            if (air instanceof MountainAir) {
+                                ((MountainAir) air).updateWeather(
+                                        command.getNumberOfHikers()
+                                );
+                                weatherChanged = true;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+        if (weatherChanged) {
+            return "The weather has changed.";
+        } else {
+            return "ERROR: The weather change does not affect the environment. Cannot perform action";
+        }
+    }
+
 }

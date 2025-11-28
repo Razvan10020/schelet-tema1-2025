@@ -34,6 +34,11 @@ public final class TemperateAir extends Air {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
+    public void applyNewSeason(String season) {
+        int seasonPenalty = "Spring".equalsIgnoreCase(season) ? 15 : 0;
+        setNewQuality(getNewQuality() - seasonPenalty);
+    }
+
     /**
      * Gets the max score of said subclass so it can be sent to Air class
      * @return

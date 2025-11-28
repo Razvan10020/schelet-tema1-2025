@@ -34,6 +34,23 @@ public final class DesertAir extends Air {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
+    private boolean desertStorm;
+    private int stormStartTimestamp = -1;
+    private static final int STORM_DURATION = 2;
+
+    public void setDesertStorm(boolean desertStorm, int currentTimestamp) {
+        this.desertStorm = desertStorm;
+        if (desertStorm) {
+            this.stormStartTimestamp = currentTimestamp;
+        }
+    }
+    public void updateStorm(int currentTimestamp) {
+        if (stormStartTimestamp != -1 && currentTimestamp >= stormStartTimestamp + STORM_DURATION) {
+            this.desertStorm = false;
+            this.stormStartTimestamp = -1;
+        }
+    }
+
     /**
      * Gets the max score of said subclass so it can be sent to Air class
      * @return

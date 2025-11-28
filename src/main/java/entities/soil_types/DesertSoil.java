@@ -34,4 +34,10 @@ public final class DesertSoil extends Soil {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
+    @Override
+    public double getDamageScore() {
+        double score = (100 - getWaterRetention() + salinity);
+        return score;
+    }
+
 }

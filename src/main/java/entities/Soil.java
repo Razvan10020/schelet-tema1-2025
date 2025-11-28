@@ -28,6 +28,12 @@ public abstract class Soil extends Entity {
      */
     public abstract double calculateQualityScore();
 
+    /**
+     * Abstract method to calculate the possibility of getting stuck in the soil.
+     * @return The possibility score.
+     */
+    public abstract double getDamageScore();
+
     private static final int GOOD_QUALITY = 70;
     private static final int MODERATE_QUALITY = 40;
 

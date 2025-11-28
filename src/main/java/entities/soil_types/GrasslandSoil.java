@@ -33,4 +33,10 @@ public final class GrasslandSoil extends Soil {
         //rotunjirea si returnarea scorului
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
+
+    @Override
+    public double getDamageScore() {
+        double score = ((50 - rootDensity) + getWaterRetention() * 0.5) / 75 * 100;
+        return score;
+    }
 }

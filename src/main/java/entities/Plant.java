@@ -20,7 +20,7 @@ public abstract class Plant extends Entity {
     /**
      * Constructor for Plant entity.
      *
-     * @param name the name of the air entity
+     * @param name the name of the air entityn
      * @param mass the mass of the air entity
      * @param oxygenFromPlant the humidity level
      * @param possibilityToGetStuck the temperature
@@ -78,13 +78,5 @@ public abstract class Plant extends Entity {
      */
     public double getTotalOxygenFromPlant() {
         return this.oxygenFromPlant + getMaturityOxigenRate();
-    }
-
-    /**
-     * Gets the possibility of the robot to get stuck in plants
-     * @return
-     */
-    public double possibilityToGetStuckInPlants() {
-        return this.possibilityToGetStuck;
     }
 }

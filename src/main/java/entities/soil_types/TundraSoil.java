@@ -33,4 +33,10 @@ public final class TundraSoil extends Soil {
         //rotunjirea si returnarea scorului
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
+
+    @Override
+    public double getDamageScore() {
+        double score = (50 - permafrostDepth) / 50 * 100;
+        return score;
+    }
 }

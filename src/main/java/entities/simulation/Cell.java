@@ -53,6 +53,9 @@ public class Cell {
      * Gets the Quality score of the cell
      * @return
      */
+    private static final double PERCENTAGE_DIVISOR = 100.0;
+    private static final int ANIMAL_ATTACK_DIVISOR = 10;
+    private static final int ANIMAL_ATTACK_BASE = 100;
     public int getQuality() {
         double sum = 0;
         int count = 0;
@@ -68,12 +71,12 @@ public class Cell {
             count++;
         }
         if (plant != null) {
-            double score = plant.getPossibilityToGetStuck() / 100.0;
+            double score = plant.getPossibilityToGetStuck() / PERCENTAGE_DIVISOR;
             sum += score;
             count++;
         }
         if (animal != null) {
-            double score = (100 - animal.getAttackChance()) / 10.0;
+            double score = (ANIMAL_ATTACK_BASE - animal.getAttackChance()) / (double) ANIMAL_ATTACK_DIVISOR;
             sum += score;
             count++;
         }

@@ -9,10 +9,10 @@ import entities.Animal;
 import entities.Plant;
 import entities.Soil;
 import entities.Water;
+import entities.air_types.TemperateAir;
 import entities.air_types.DesertAir;
 import entities.air_types.MountainAir;
 import entities.air_types.PolarAir;
-import entities.air_types.TemperatAir;
 import entities.air_types.TropicalAir;
 import entities.animal_types.Carnivore;
 import entities.animal_types.Detritivore;
@@ -164,7 +164,7 @@ public final class Main {
                     );
                     break;
                 case "TemperateAir":
-                    airEntity = new TemperatAir(
+                    airEntity = new TemperateAir(
                             name,
                             airData.getMass(),
                             airData.getHumidity(),
@@ -319,6 +319,18 @@ public final class Main {
             ObjectNode resultNode = MAPPER.createObjectNode();
             resultNode.put("command", command.getCommand());
 
+            if (simulations.isSimulationStarted() && simulations.getTeraBot() != null &&
+                    simulations.getTeraBot().isCharging()) {
+                    if (command.getTimestamp() < simulations.getTeraBot().getCharge_unit()) {
+                        resultNode.put("message", "ERROR: Robot still charging. Cannot perform action");
+                        resultNode.put("timestamp", command.getTimestamp());
+                        output.add(resultNode);
+                        continue; // Skip to the next command
+                    } else {
+                        simulations.getTeraBot().setCharging(false);
+                    }
+            }
+
             switch (command.getCommand()) {
                 case "startSimulation":
                     if (simulations.isSimulationStarted()) {
@@ -375,6 +387,29 @@ public final class Main {
                         resultNode.put("timestamp", command.getTimestamp());
                     } else {
                         resultNode.put("message", simulations.moveRobot());
+                        resultNode.put("timestamp", command.getTimestamp());
+                    }
+                    output.add(resultNode);
+                    break;
+                case "getEnergyStatus":
+                    if (!simulations.isSimulationStarted()) {
+                        resultNode.put("message",
+                                "ERROR: Simulation not started. Cannot perform action");
+                        resultNode.put("timestamp", command.getTimestamp());
+                    } else {
+                        resultNode.put("message", simulations.getEnergyStatus());
+                        resultNode.put("timestamp", command.getTimestamp());
+                    }
+                    output.add(resultNode);
+                    break;
+                case "rechargeBattery":
+                    if (!simulations.isSimulationStarted()) {
+                        resultNode.put("message",
+                                "ERROR: Simulation not started. Cannot perform action");
+                        resultNode.put("timestamp", command.getTimestamp());
+                    } else {
+                        resultNode.put("message", simulations.rechargeBattery(command.getTimeToCharge(),
+                                                                                        command.getTimestamp()));
                         resultNode.put("timestamp", command.getTimestamp());
                     }
                     output.add(resultNode);

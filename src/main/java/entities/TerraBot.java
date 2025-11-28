@@ -12,6 +12,9 @@ public class TerraBot {
     private int x;
     private int y;
     private int energy;
+    private boolean isCharging;
+    private int full_energy;
+    private int Charge_unit;
 
     /**
      * Constructor for the TeraBot class.
@@ -21,5 +24,8 @@ public class TerraBot {
         this.x = 0;
         this.y = 0;
         this.energy = energy;
+        this.full_energy = energy;
+        this.isCharging = false;
+        this.Charge_unit = 0;
     }
 }

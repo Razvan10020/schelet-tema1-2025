@@ -9,11 +9,7 @@ import entities.Plant;
 import entities.Soil;
 import entities.TerraBot;
 import entities.Water;
-import entities.air_types.DesertAir;
-import entities.air_types.MountainAir;
-import entities.air_types.PolarAir;
-import entities.air_types.TemperatAir;
-import entities.air_types.TropicalAir;
+import entities.air_types.*;
 import entities.soil_types.DesertSoil;
 import entities.soil_types.ForestSoil;
 import entities.soil_types.GrasslandSoil;
@@ -24,6 +20,7 @@ import fileio.WaterInput;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,12 +63,12 @@ public class Simulations {
     public void endSimulation() {
         this.simulationStarted = false;
     }
-
     /**
      * Prints the environmental conditions of the cell where the robot is currently located.
      * @return An ObjectNode containing the environmental conditions.
      */
-    public ObjectNode printEnvConditions() {
+    public ObjectNode printEnvConditions(){
+
         Cell currentCell = territory.getCell(teraBot.getX(), teraBot.getY());
         ObjectNode cellNode = MAPPER.createObjectNode();
 
@@ -146,8 +143,8 @@ public class Simulations {
             airNode.put("temperature", air.getTemperature());
             airNode.put("oxygenLevel", air.getOxygenLevel());
             airNode.put("airQuality", air.calculateQualityScore());
-            if (air instanceof TemperatAir) {
-                airNode.put("pollenLevel", ((TemperatAir) air).getPollenLevel());
+            if (air instanceof TemperateAir) {
+                airNode.put("pollenLevel", ((TemperateAir) air).getPollenLevel());
             } else if (air instanceof DesertAir) {
                 airNode.put("dustParticles", ((DesertAir) air).getDustParticles());
             } else if (air instanceof MountainAir) {
@@ -197,6 +194,7 @@ public class Simulations {
     }
 
     public String moveRobot() {
+
         int x = teraBot.getX();
         int y = teraBot.getY();
 
@@ -206,14 +204,14 @@ public class Simulations {
 
         // Order: up, right, down, left
         int[] dx = {1, 0, -1, 0};
-        int[] dy = {0, 1, 0, 1};
+        int[] dy = {0, 1, 0, -1};
 
         for (int i = 0; i < 4; i++) {
             int nx = x + dx[i];
             int ny = y + dy[i];
 
             if (nx >= 0 && nx < territory.getCols() && ny >= 0 && ny < territory.getRows()) {
-                Cell neighborCell = territory.getCell(ny, nx);
+                Cell neighborCell = territory.getCell(nx, ny);
                 if (neighborCell != null) {
                     int currentScore = neighborCell.getQuality();
                     if (currentScore < bestScore) {
@@ -230,12 +228,33 @@ public class Simulations {
                 teraBot.setEnergy(teraBot.getEnergy() - bestScore);
                 teraBot.setX(bestX);
                 teraBot.setY(bestY);
-                return "The robot has successfully moved to position (" + bestX + ", " + bestY + ").";
+                return "The robot has successfully moved to position (" + bestY + ", " + bestX + ").";
             } else {
                 return "ERROR: Not enough battery left. Cannot perform action";
             }
         }
 
         return "ERROR: Cannot move to any adjacent cell.";
+    }
+
+    public String getEnergyStatus(){
+        if(teraBot.isCharging() == true){
+            return "ERROR: Robot still charging. Cannot perform action";
+        }
+        int x = teraBot.getEnergy();
+        return "TerraBot has " + x + " energy points left.";
+    }
+
+    public String rechargeBattery(int timeToChange, int timestep){
+        if(teraBot.isCharging()){
+            return "ERROR: Robot still charging. Cannot perform action";
+        }
+        if(teraBot.getEnergy() < teraBot.getFull_energy()){
+            teraBot.setCharging(true);
+            teraBot.setCharge_unit(timestep + timeToChange);
+            teraBot.setEnergy(teraBot.getEnergy() + timeToChange);
+            return "Robot battery is charging.";
+        }
+        else return "Robot is fully charged";
     }
 }

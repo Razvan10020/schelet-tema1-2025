@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import static java.lang.Math.abs;
 
-public class Water extends Entity {
+public final class Water extends Entity {
     private static final double PH_SCORE_FACTOR = 7.5;
     private static final double SALINITY_SCORE_FACTOR = 350;
 
@@ -33,6 +33,9 @@ public class Water extends Entity {
     @Getter @Setter
     private int interactionCounter = 0;
 
+    /**
+     * Increments the interaction counter.
+     */
     public void incrementInteractionCounter() {
         this.interactionCounter++;
     }

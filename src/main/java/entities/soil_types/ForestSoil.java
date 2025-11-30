@@ -36,9 +36,13 @@ public final class ForestSoil extends Soil {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
+    private static final double RET_WEIGH = 0.6;
+    private static final double LEAF_LIT_SCORE = 0.4;
+    private static final int DIVISOR_FOR_SCORE = 80;
     @Override
     public double getDamageScore() {
-        double score = (getWaterRetention() * 0.6 + leafLitter * 0.4) / 80 * 100;
+        double score = (getWaterRetention() * RET_WEIGH + leafLitter * LEAF_LIT_SCORE)
+                / DIVISOR_FOR_SCORE * PROCENTAGE_MULTIPLIER;
         return score;
     }
 }

@@ -2,7 +2,6 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
-import lombok.Setter;
 
 public final class TemperateAir extends Air {
     private static final double MAX_SCORE = 84;
@@ -10,6 +9,7 @@ public final class TemperateAir extends Air {
     private static final double POLLEN_WEIGH = 0.1;
     private static final int PROCENTAGE_MULTIPLIER = 100;
     private static final double ROUNDING_FACTOR = 100.0;
+    private static final int SEASON_PENALTY = 15;
 
     @Getter
     private double pollenLevel;
@@ -38,9 +38,13 @@ public final class TemperateAir extends Air {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
-    public void applyNewSeason(String season) {
-        this.season = season;
-        int seasonPenalty = "Spring".equalsIgnoreCase(season) ? 15 : 0;
+    /**
+     * Applies the effect of a new season.
+     * @param newSeason The new season.
+     */
+    public void applyNewSeason(final String newSeason) {
+        this.season = newSeason;
+        int seasonPenalty = "Spring".equalsIgnoreCase(newSeason) ? SEASON_PENALTY : 0;
         setNewQuality(getNewQuality() - seasonPenalty);
         setWheatherChanged(true);
     }

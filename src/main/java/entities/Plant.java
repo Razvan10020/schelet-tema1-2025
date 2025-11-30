@@ -3,13 +3,12 @@ package entities;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Scanner;
-
 public abstract class Plant extends Entity {
     private static final double OXY_PS_Y = 0.2;
     private static final double OXY_PS_M = 0.7;
     private static final double OXY_PS_O = 0.4;
     private static final double OXY_PS_D = 0.0;
+    private static final double GROWTH_STEP = 0.3;
 
     @Getter
     private String status;
@@ -61,8 +60,9 @@ public abstract class Plant extends Entity {
                 default:
                     this.status = "dead";
             }
+        } else {
+            this.growthRate = this.growthRate + GROWTH_STEP;
         }
-        else this.growthRate = this.growthRate + 0.3;
     }
 
     /**

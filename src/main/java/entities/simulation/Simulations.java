@@ -1,6 +1,5 @@
 package entities.simulation;
 //verificare123
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -10,7 +9,11 @@ import entities.Plant;
 import entities.Soil;
 import entities.TerraBot;
 import entities.Water;
-import entities.air_types.*;
+import entities.air_types.DesertAir;
+import entities.air_types.MountainAir;
+import entities.air_types.PolarAir;
+import entities.air_types.TemperateAir;
+import entities.air_types.TropicalAir;
 import entities.soil_types.DesertSoil;
 import entities.soil_types.ForestSoil;
 import entities.soil_types.GrasslandSoil;
@@ -22,10 +25,7 @@ import fileio.WaterInput;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -39,8 +39,10 @@ public class Simulations {
     private Territory territory;
     private TerraBot teraBot;
     private boolean simulationStarted;
-    private SimulationInput simulationInput;
+    private SimulationInput currentSimulationInput;
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private static final double ROUNDING_FACTOR = 100.0;
 
     /**
      * Constructor for the Simulations class.
@@ -51,10 +53,11 @@ public class Simulations {
 
     /**
      * Starts a new simulation.
+     *
      * @param simulationInput The input data for the simulation.
      */
     public void startSimulation(final SimulationInput simulationInput) {
-        this.simulationInput = simulationInput;
+        this.currentSimulationInput = simulationInput;
         String[] dims = simulationInput.getTerritoryDim().split("x");
         int rows = Integer.parseInt(dims[0]);
         int cols = Integer.parseInt(dims[1]);
@@ -69,11 +72,13 @@ public class Simulations {
     public void endSimulation() {
         this.simulationStarted = false;
     }
+
     /**
      * Prints the environmental conditions of the cell where the robot is currently located.
+     *
      * @return An ObjectNode containing the environmental conditions.
      */
-    public ObjectNode printEnvConditions(){
+    public ObjectNode printEnvConditions() {
 
         Cell currentCell = territory.getCell(teraBot.getX(), teraBot.getY());
         ObjectNode cellNode = MAPPER.createObjectNode();
@@ -91,11 +96,16 @@ public class Simulations {
             soilNode.put("soilQuality", soil.calculateQualityScore());
 
             switch (soil) {
-                case ForestSoil forestSoil -> soilNode.put("leafLitter", forestSoil.getLeafLitter());
-                case DesertSoil desertSoil -> soilNode.put("salinity", desertSoil.getSalinity());
-                case GrasslandSoil grasslandSoil -> soilNode.put("rootDensity", grasslandSoil.getRootDensity());
-                case SwampSoil swampSoil -> soilNode.put("waterLogging", swampSoil.getWaterLogging());
-                case TundraSoil tundraSoil -> soilNode.put("permafrostDepth", tundraSoil.getPermafrostDepth());
+                case ForestSoil forestSoil
+                        -> soilNode.put("leafLitter", forestSoil.getLeafLitter());
+                case DesertSoil desertSoil
+                        -> soilNode.put("salinity", desertSoil.getSalinity());
+                case GrasslandSoil grasslandSoil
+                        -> soilNode.put("rootDensity", grasslandSoil.getRootDensity());
+                case SwampSoil swampSoil
+                        -> soilNode.put("waterLogging", swampSoil.getWaterLogging());
+                case TundraSoil tundraSoil
+                        -> soilNode.put("permafrostDepth", tundraSoil.getPermafrostDepth());
                 default -> {
                 }
             }
@@ -126,7 +136,8 @@ public class Simulations {
         if (currentCell.getWater() != null) {
             ObjectNode waterNode = MAPPER.createObjectNode();
             Water water = currentCell.getWater();
-            for (WaterInput waterInput : simulationInput.getTerritorySectionParams().getWater()) {
+            for (WaterInput waterInput : currentSimulationInput.
+                    getTerritorySectionParams().getWater()) {
                 if (waterInput.getName().equals(water.getName())) {
                     waterNode.put("type", waterInput.getType());
                     break;
@@ -176,6 +187,7 @@ public class Simulations {
 
     /**
      * Prints a summary of each cell on the map.
+     *
      * @return An ArrayNode containing the map summary.
      */
     public ArrayNode printMap() {
@@ -207,7 +219,13 @@ public class Simulations {
         return mapNode;
     }
 
-    public String moveRobot() {
+    private static final int DIRECTIONS = 4;
+    /**
+     * Moves the robot to the best adjacent cell based on quality scores.
+     *
+     * @return A message indicating the success or failure of the movement.
+     */
+    public final String moveRobot() {
 
         int x = teraBot.getX();
         int y = teraBot.getY();
@@ -220,7 +238,7 @@ public class Simulations {
         int[] dx = {1, 0, -1, 0};
         int[] dy = {0, 1, 0, -1};
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < DIRECTIONS; i++) {
             int nx = x + dx[i];
             int ny = y + dy[i];
 
@@ -242,7 +260,8 @@ public class Simulations {
                 teraBot.setEnergy(teraBot.getEnergy() - bestScore);
                 teraBot.setX(bestX);
                 teraBot.setY(bestY);
-                return "The robot has successfully moved to position (" + bestY + ", " + bestX + ").";
+                return "The robot has successfully moved to position ("
+                        + bestY + ", " + bestX + ").";
             } else {
                 return "ERROR: Not enough battery left. Cannot perform action";
             }
@@ -251,28 +270,46 @@ public class Simulations {
         return "ERROR: Cannot move to any adjacent cell.";
     }
 
-    public String getEnergyStatus(){
-        if(teraBot.isCharging()){
+    /**
+     * Gets the current energy status of the TerraBot.
+     *
+     * @return A message indicating the current energy points or an error if charging.
+     */
+    public String getEnergyStatus() {
+        if (teraBot.isCharging()) {
             return "ERROR: Robot still charging. Cannot perform action";
         }
         int x = teraBot.getEnergy();
         return "TerraBot has " + x + " energy points left.";
     }
 
-    public String rechargeBattery(int timeToChange, int timestep){
-        if(teraBot.isCharging()){
+    /**
+     * Recharges the TerraBot's battery.
+     *
+     * @param timeToCharge The amount of energy to charge.
+     * @param timestep     The current timestamp.
+     * @return A message indicating charging status or an error if already charging.
+     */
+    public String rechargeBattery(final int timeToCharge, final int timestep) {
+        if (teraBot.isCharging()) {
             return "ERROR: Robot still charging. Cannot perform action";
         }
-        if(teraBot.getEnergy() < teraBot.getFull_energy()){
+        if (teraBot.getEnergy() < teraBot.getFullEnergy()) {
             teraBot.setCharging(true);
-            teraBot.setCharge_unit(timestep + timeToChange);
-            teraBot.setEnergy(teraBot.getEnergy() + timeToChange);
+            teraBot.setChargeUnit(timestep + timeToCharge);
+            teraBot.setEnergy(teraBot.getEnergy() + timeToCharge);
             return "Robot battery is charging.";
+        } else {
+            return "Robot is fully charged";
         }
-        else return "Robot is fully charged";
     }
 
-    public String changeWeatherConditions(CommandInput command) {
+    /**
+     * Cahnges ythe weather conditions and special parameters of air types
+     * @param command
+     * @return
+     */
+    public String changeWeatherConditions(final CommandInput command) {
         for (int i = 0; i < territory.getRows(); i++) {
             for (int j = 0; j < territory.getCols(); j++) {
 
@@ -280,31 +317,42 @@ public class Simulations {
                 if (air != null) {
 
                     switch (command.getType()) {
-                        case "rainfall":
-                            if (air instanceof TropicalAir) ((TropicalAir) air)
-                                    .applyRainfall(command.getRainfall());
+                        case "rainfall": {
+                            if (air instanceof TropicalAir) {
+                                ((TropicalAir) air).applyRainfall(command.getRainfall());
+                            }
                             break;
-
-                        case "polarStorm":
-                            if (air instanceof PolarAir) ((PolarAir) air)
-                                    .applyPolarStorm(command.getWindSpeed());
+                        }
+                        case "polarStorm": {
+                            if (air instanceof PolarAir) {
+                                ((PolarAir) air).applyPolarStorm(command.getWindSpeed());
+                            }
                             break;
-
-                        case "newSeason":
-                            if (air instanceof TemperateAir) ((TemperateAir) air).applyNewSeason(command.getSeason());
+                        }
+                        case "newSeason": {
+                            if (air instanceof TemperateAir) {
+                                ((TemperateAir) air).applyNewSeason(command.getSeason());
+                            }
                             break;
-
-                        case "desertStorm":
-                            if (air instanceof DesertAir) ((DesertAir) air).setDesertStorm(
+                        }
+                        case "desertStorm": {
+                            if (air instanceof DesertAir) {
+                                ((DesertAir) air).setDesertStorm(
                                         command.isDesertStorm(),
                                         command.getTimestamp()
                                 );
+                            }
                             break;
-
-                        case "peopleHiking":
-                            if (air instanceof MountainAir) ((MountainAir) air).updateWeather(
+                        }
+                        case "peopleHiking": {
+                            if (air instanceof MountainAir) {
+                                ((MountainAir) air).updateWeather(
                                         command.getNumberOfHikers()
                                 );
+                            }
+                            break;
+                        }
+                        default:
                             break;
                     }
                 }
@@ -313,18 +361,32 @@ public class Simulations {
         return "The weather has changed.";
     }
 
-    public void plantEnvChange(int x, int y){
+    /**
+     * Applies environmental changes related to plants in a specific cell.
+     *
+     * @param x The x-coordinate (column) of the cell.
+     * @param y The y-coordinate (row) of the cell.
+     */
+    public void plantEnvChange(final int x, final int y) {
 
-        Cell currentCell = territory.getCell(x,y);
+        Cell currentCell = territory.getCell(x, y);
         currentCell.getPlant().updateMaturity();
-        double last_oxygen_level = currentCell.getAir().getOxygenLevel();
+        double lastOxygenLevel = currentCell.getAir().getOxygenLevel();
         double adaos = currentCell.getPlant().getTotalOxygenFromPlant();
-        double result = last_oxygen_level + adaos;
-        result = Math.round(result * 100.0) / 100.0;
+        double result = lastOxygenLevel + adaos;
+        result = Math.round(result * ROUNDING_FACTOR) / ROUNDING_FACTOR;
         currentCell.getAir().setOxygenLevel(result);
     }
 
-    public void advanceTime(int newTime) {
+    private static final double HUMIDITY_CHANGE = 0.1;
+    private static final double WATER_RETENTION_CHANGE = 0.1;
+
+    /**
+     * Advances the simulation time and processes environmental interactions.
+     *
+     * @param newTime The new timestamp to advance to.
+     */
+    public void advanceTime(final int newTime) {
         int currentTime = territory.getCurrentTime();
         while (currentTime < newTime) {
             currentTime++;
@@ -343,15 +405,19 @@ public class Simulations {
                     Cell cell = territory.getCell(i, j);
                     if (cell.getWater() != null && cell.getWater().isScanned()) {
                         cell.getWater().incrementInteractionCounter();
-                        if (cell.getWater().getInteractionCounter() >= 2 && cell.getWater().getInteractionCounter() % 2 == 0) {
+                        if (cell.getWater().getInteractionCounter() >= 2
+                                && cell.getWater().getInteractionCounter() % 2 == 0) {
                             if (cell.getAir() != null) {
-                                double newHumidity = cell.getAir().getHumidity() + 0.1;
-                                newHumidity = Math.round(newHumidity * 100.0) / 100.0;
+                                double newHumidity = cell.getAir().getHumidity() + HUMIDITY_CHANGE;
+                                newHumidity = Math.round(newHumidity * ROUNDING_FACTOR)
+                                                / ROUNDING_FACTOR;
                                 cell.getAir().setHumidity(newHumidity);
                             }
                             if (cell.getSoil() != null) {
-                                double newWaterRetention = cell.getSoil().getWaterRetention() + 0.1;
-                                newWaterRetention = Math.round(newWaterRetention * 100.0) / 100.0;
+                                double newWaterRetention = cell.getSoil().getWaterRetention()
+                                        + WATER_RETENTION_CHANGE;
+                                newWaterRetention = Math.round(newWaterRetention * ROUNDING_FACTOR)
+                                                    / ROUNDING_FACTOR;
                                 cell.getSoil().setWaterRetention(newWaterRetention);
                             }
                         }
@@ -372,7 +438,13 @@ public class Simulations {
     }
 
     private static final int CONSTANT_OF_L_ENERGY = 7;
-    public String scanObject(CommandInput command) {
+
+    /**
+     * Scans an object in the current cell.
+     * @param command The command input containing scan parameters.
+     * @return A message indicating the scanned object or an error.
+     */
+    public String scanObject(final CommandInput command) {
         if (teraBot.getEnergy() < CONSTANT_OF_L_ENERGY) {
             return "ERROR: Not enough battery left. Cannot perform action";
         }
@@ -382,9 +454,9 @@ public class Simulations {
         String scannedSound = command.getSound();
         Cell currentCell = territory.getCell(teraBot.getX(), teraBot.getY());
 
-        if(Objects.equals(scannedColor, "none")
-        && Objects.equals(scannedSmell, "none")
-        && Objects.equals(scannedSound, "none")) {
+        if (Objects.equals(scannedColor, "none")
+                && Objects.equals(scannedSmell, "none")
+                && Objects.equals(scannedSound, "none")) {
             if (currentCell.getWater() != null) {
                 currentCell.getWater().setScanned(true);
                 teraBot.setEnergy(teraBot.getEnergy() - CONSTANT_OF_L_ENERGY);
@@ -393,7 +465,7 @@ public class Simulations {
                 return "ERROR: Object not found. Cannot perform action";
             }
         }
-        if(!Objects.equals(scannedColor, "none")
+        if (!Objects.equals(scannedColor, "none")
                 && !Objects.equals(scannedSmell, "none")
                 && Objects.equals(scannedSound, "none")) {
             if (currentCell.getPlant() != null) {
@@ -404,7 +476,8 @@ public class Simulations {
                 return "ERROR: Object not found. Cannot perform action";
             }
         }
-        else if (Stream.of(scannedColor, scannedSmell, scannedSound).noneMatch(s -> Objects.equals(s, "none"))) {
+        if (Stream.of(scannedColor, scannedSmell, scannedSound)
+                .noneMatch(s -> Objects.equals(s, "none"))) {
             if (currentCell.getAnimal() != null) {
                 currentCell.getAnimal().setScanned(true);
                 teraBot.setEnergy(teraBot.getEnergy() - CONSTANT_OF_L_ENERGY);

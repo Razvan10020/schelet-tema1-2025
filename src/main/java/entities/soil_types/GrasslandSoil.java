@@ -34,9 +34,14 @@ public final class GrasslandSoil extends Soil {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
+    private static final int ROOT_DENSITY_THRESHOLD = 50;
+    private static final double WATER_RETENTION_WEIGH = 0.5;
+    private static final int DIVISOR_FOR_SCORE = 75;
     @Override
     public double getDamageScore() {
-        double score = ((50 - rootDensity) + getWaterRetention() * 0.5) / 75 * 100;
+        double score = ((ROOT_DENSITY_THRESHOLD - rootDensity)
+                + getWaterRetention() * WATER_RETENTION_WEIGH) / DIVISOR_FOR_SCORE
+                * PROCENTAGE_MULTIPLIER;
         return score;
     }
 }

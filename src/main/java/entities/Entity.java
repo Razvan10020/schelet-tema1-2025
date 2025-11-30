@@ -1,12 +1,11 @@
 package entities;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class Entity {
     @Getter
     private final String name;
-    @Getter @Setter
+    @Getter
     private final double mass;
 
     private static final int PERCENTAGE_MULTIPLIER = 100;

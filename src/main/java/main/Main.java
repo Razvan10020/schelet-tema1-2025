@@ -62,7 +62,8 @@ public final class Main {
 
             Soil soilEntity = null;
             for (PairInput pair : soilData.getSections()) {
-                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setSoil(newSoil(type, soilData));
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).
+                        setSoil(newSoil(type, soilData));
             }
         }
 
@@ -70,7 +71,8 @@ public final class Main {
             String type = airData.getType();
 
             for (PairInput pair : airData.getSections()) {
-                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setAir(newAir(type, airData));
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).
+                        setAir(newAir(type, airData));
             }
         }
 
@@ -78,25 +80,35 @@ public final class Main {
             String type = plantData.getType();
 
             for (PairInput pair : plantData.getSections()) {
-                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setPlant(newPlant(type, plantData));
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).
+                        setPlant(newPlant(type, plantData));
             }
         }
 
         for (WaterInput waterData : currentSimulation.getTerritorySectionParams().getWater()) {
             for (PairInput pair : waterData.getSections()) {
-                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setWater(newWater(waterData));
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).
+                        setWater(newWater(waterData));
             }
         }
 
         for (AnimalInput animalData : currentSimulation.getTerritorySectionParams().getAnimals()) {
             String type = animalData.getType();
             for (PairInput pair : animalData.getSections()) {
-                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setAnimal(newAnimal(type, animalData));
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).
+                        setAnimal(newAnimal(type, animalData));
             }
         }
     }
 
-    public static Soil newSoil(String type, SoilInput soilData) {
+    /**
+     * GetS ALL INFORMATION NEEDED to create a new soil entiti and it creates one so i don t
+     * reference the same entity in memory
+     * @param type
+     * @param soilData
+     * @return
+     */
+    public static Soil newSoil(final String type, final SoilInput soilData) {
         Soil soilEntity = null;
         switch (type) {
             case "ForestSoil":
@@ -161,7 +173,13 @@ public final class Main {
         return soilEntity;
     }
 
-    public static Plant newPlant(String type, PlantInput plantData) {
+    /**
+     * GetS ALL INFORMATION NEEDED to create a new plant entiti and it creates one so i don t
+     * @param type
+     * @param plantData
+     * @return
+     */
+    public static Plant newPlant(final String type, final PlantInput plantData) {
         Plant plantEntity = null;
         switch (type) {
             case "Algae":
@@ -201,7 +219,13 @@ public final class Main {
         return  plantEntity;
     }
 
-    public static Air newAir(String type, AirInput airData) {
+    /**
+     * GetS ALL INFORMATION NEEDED to create a new air entiti and it creates one so i don t
+     * @param type
+     * @param airData
+     * @return
+     */
+    public static Air newAir(final String type, final AirInput airData) {
         Air airEntity = null;
         String name = airData.getName();
         switch (type) {
@@ -262,7 +286,12 @@ public final class Main {
         return   airEntity;
     }
 
-    public static Water newWater(WaterInput waterData) {
+    /**
+     * GetS ALL INFORMATION NEEDED to create a new water entiti and it creates one so i don t
+     * @param waterData
+     * @return
+     */
+    public static Water newWater(final WaterInput waterData) {
         return new Water(
                 waterData.getName(),
                 waterData.getMass(),
@@ -275,7 +304,13 @@ public final class Main {
         );
     }
 
-    public static Animal newAnimal(String type, AnimalInput animalData) {
+    /**
+     * GetS ALL INFORMATION NEEDED to create a new animal entiti and it creates one so i don t
+     * @param type
+     * @param animalData
+     * @return
+     */
+    public static Animal newAnimal(final String type, final AnimalInput animalData) {
         Animal animalEntity = null;
         String name = animalData.getName();
         switch (type) {
@@ -331,7 +366,8 @@ public final class Main {
             ObjectNode resultNode = MAPPER.createObjectNode();
             resultNode.put("command", command.getCommand());
 
-            if (!simulations.isSimulationStarted() && !Objects.equals(command.getCommand(), "startSimulation")) {
+            if (!simulations.isSimulationStarted()
+                    && !Objects.equals(command.getCommand(), "startSimulation")) {
                 resultNode.put("message",
                         "ERROR: Simulation not started. Cannot perform action");
                 resultNode.put("timestamp", command.getTimestamp());
@@ -339,10 +375,11 @@ public final class Main {
                 continue;
             }
 
-            if (simulations.isSimulationStarted() && simulations.getTeraBot() != null &&
-                    simulations.getTeraBot().isCharging()) {
-                    if (command.getTimestamp() < simulations.getTeraBot().getCharge_unit()) {
-                        resultNode.put("message", "ERROR: Robot still charging. Cannot perform action");
+            if (simulations.isSimulationStarted() && simulations.getTeraBot() != null
+                    && simulations.getTeraBot().isCharging()) {
+                    if (command.getTimestamp() < simulations.getTeraBot().getChargeUnit()) {
+                        resultNode.put("message",
+                                "ERROR: Robot still charging. Cannot perform action");
                         resultNode.put("timestamp", command.getTimestamp());
                         output.add(resultNode);
                         continue;
@@ -389,8 +426,9 @@ public final class Main {
                     output.add(resultNode);
                     break;
                 case "rechargeBattery":
-                    resultNode.put("message", simulations.rechargeBattery(command.getTimeToCharge(),
-                                                                                        command.getTimestamp()));
+                    resultNode.put("message",
+                            simulations.rechargeBattery(command.getTimeToCharge(),
+                                                        command.getTimestamp()));
                     resultNode.put("timestamp", command.getTimestamp());
                     output.add(resultNode);
                     break;
@@ -411,7 +449,9 @@ public final class Main {
                     break;
             }
 
-            if(simulations.isSimulationStarted()) simulations.advanceTime(command.getTimestamp());
+            if (simulations.isSimulationStarted()) {
+                simulations.advanceTime(command.getTimestamp());
+            }
         }
 
         File outputFile = new File(outputPath);

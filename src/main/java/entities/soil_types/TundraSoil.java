@@ -34,9 +34,12 @@ public final class TundraSoil extends Soil {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
+    private static final int PERMAFROST_DEPTH_THRESHOLD = 50;
+    private static final int DIVISOR_FOR_SCORE = 50;
     @Override
     public double getDamageScore() {
-        double score = (50 - permafrostDepth) / 50 * 100;
+        double score = (PERMAFROST_DEPTH_THRESHOLD - permafrostDepth)
+                / DIVISOR_FOR_SCORE * PROCENTAGE_MULTIPLIER;
         return score;
     }
 }

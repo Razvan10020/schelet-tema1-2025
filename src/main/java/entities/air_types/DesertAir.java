@@ -47,11 +47,6 @@ public final class DesertAir extends Air {
 
     /**
      * Sets the desert storm status.
-     * @param desertStorm The desert storm status.
-     * @param currentTimestamp The current timestamp.
-     */
-    /**
-     * Sets the desert storm status.
      * @param isStorming The desert storm status.
      * @param currentTimestamp The current timestamp.
      */

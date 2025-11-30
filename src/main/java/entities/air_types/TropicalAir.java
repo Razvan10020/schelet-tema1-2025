@@ -2,7 +2,6 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
-import lombok.Setter;
 
 public final class TropicalAir extends Air {
     private static final double MAX_SCORE = 82;
@@ -10,10 +9,11 @@ public final class TropicalAir extends Air {
     private static final double CO2_WEIGH = 0.01;
     private static final int PROCENTAGE_MULTIPLIER = 100;
     private static final double ROUNDING_FACTOR = 100.0;
+    private static final double RAINFALL_FACTOR = 0.3;
 
     @Getter
     private double co2Level;
-    @Getter @Setter
+    @Getter
     private double rainfall;
 
     public TropicalAir(final String name, final double mass,
@@ -37,10 +37,14 @@ public final class TropicalAir extends Air {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
-    public void applyRainfall(double rainfall) {
-        this.rainfall = rainfall;
+    /**
+     * Applies the effect of rainfall.
+     * @param amount The amount of rainfall.
+     */
+    public void applyRainfall(final double amount) {
+        this.rainfall = amount;
         this.setWheatherChanged(true);
-        setNewQuality(getNewQuality() + (rainfall * 0.3));
+        setNewQuality(getNewQuality() + (amount * RAINFALL_FACTOR));
     }
 
     /**

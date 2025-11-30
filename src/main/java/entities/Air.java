@@ -79,14 +79,7 @@ public abstract class Air extends Entity {
      */
     public abstract double calculateQualityScore();
 
-    /**
-     * Gets the humidity level.
-     *
-     * @return the humidity level
-     */
-    public final double getHumidity() {
-        return humidity;
-    }
+
 
     private static final int GOOD_QUALITY = 70;
     private static final int MODERATE_QUALITY = 40;

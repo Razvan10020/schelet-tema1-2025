@@ -34,8 +34,9 @@ public final class SwampSoil extends Soil {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
+    private static final int WATER_LOGGING_FACTOR = 10;
     @Override
     public double getDamageScore() {
-        return waterLogging * 10;
+        return waterLogging * WATER_LOGGING_FACTOR;
     }
 }

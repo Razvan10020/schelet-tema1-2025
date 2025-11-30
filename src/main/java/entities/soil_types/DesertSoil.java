@@ -36,8 +36,7 @@ public final class DesertSoil extends Soil {
 
     @Override
     public double getDamageScore() {
-        double score = (100 - getWaterRetention() + salinity);
+        double score = (PROCENTAGE_MULTIPLIER - getWaterRetention() + salinity);
         return score;
     }
-
 }

@@ -27,6 +27,11 @@ public abstract class Soil extends Entity {
      * Abstract method that gets overridden by every soil type
      * @return
      */
+    /**
+     * Calculates the quality score of the soil.
+     * This method must be implemented by subclasses.
+     * @return The calculated quality score.
+     */
     public abstract double calculateQualityScore();
 
     /**
@@ -37,6 +42,7 @@ public abstract class Soil extends Entity {
 
     private static final int GOOD_QUALITY = 70;
     private static final int MODERATE_QUALITY = 40;
+    private static final double WATER_RETENTION_INCREMENT = 0.1;
 
     /**
      * Gets the quality of the soil.
@@ -53,7 +59,10 @@ public abstract class Soil extends Entity {
         }
     }
 
+    /**
+     * UPDATES THE WATER RETENTIONS WITH EVERY TIMESPET CALLED BY ADVANCED TIME;
+     */
     public final void updateWaterRetention() {
-        this.waterRetention = this.waterRetention + 0.1;
+        this.waterRetention = this.waterRetention + WATER_RETENTION_INCREMENT;
     }
 }

@@ -83,65 +83,15 @@ public final class Main {
         }
 
         for (WaterInput waterData : currentSimulation.getTerritorySectionParams().getWater()) {
-            String name = waterData.getName();
-
-            Water waterEntity = new Water(
-                    name,
-                    waterData.getMass(),
-                    waterData.getSalinity(),
-                    waterData.getPH(),
-                    waterData.getPurity(),
-                    waterData.getTurbidity(),
-                    waterData.getContaminantIndex(),
-                    waterData.isFrozen()
-            );
             for (PairInput pair : waterData.getSections()) {
-                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setWater(waterEntity);
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setWater(newWater(waterData));
             }
         }
 
         for (AnimalInput animalData : currentSimulation.getTerritorySectionParams().getAnimals()) {
-            String name = animalData.getName();
             String type = animalData.getType();
-
-            Animal animalEntity = null;
-            switch (type) {
-                case "Herbivores":
-                    animalEntity = new Herbivore(
-                            name,
-                            animalData.getMass()
-                    );
-                    break;
-                case "Carnivores":
-                    animalEntity = new Carnivore(
-                            name,
-                            animalData.getMass()
-                    );
-                    break;
-                case "Detritivores":
-                    animalEntity = new Detritivore(
-                            name,
-                            animalData.getMass()
-                    );
-                    break;
-                case "Omnivores":
-                    animalEntity = new Omnivore(
-                            name,
-                            animalData.getMass()
-                    );
-                    break;
-                case "Parasites":
-                    animalEntity = new Parasite(
-                            name,
-                            animalData.getMass()
-                    );
-                    break;
-                default:
-                    System.out.println("Invalid animal input");
-                    break;
-            }
             for (PairInput pair : animalData.getSections()) {
-                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setAnimal(animalEntity);
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setAnimal(newAnimal(type, animalData));
             }
         }
     }
@@ -311,6 +261,61 @@ public final class Main {
         }
         return   airEntity;
     }
+
+    public static Water newWater(WaterInput waterData) {
+        return new Water(
+                waterData.getName(),
+                waterData.getMass(),
+                waterData.getSalinity(),
+                waterData.getPH(),
+                waterData.getPurity(),
+                waterData.getTurbidity(),
+                waterData.getContaminantIndex(),
+                waterData.isFrozen()
+        );
+    }
+
+    public static Animal newAnimal(String type, AnimalInput animalData) {
+        Animal animalEntity = null;
+        String name = animalData.getName();
+        switch (type) {
+            case "Herbivores":
+                animalEntity = new Herbivore(
+                        name,
+                        animalData.getMass()
+                );
+                break;
+            case "Carnivores":
+                animalEntity = new Carnivore(
+                        name,
+                        animalData.getMass()
+                );
+                break;
+            case "Detritivores":
+                animalEntity = new Detritivore(
+                        name,
+                        animalData.getMass()
+                );
+                break;
+            case "Omnivores":
+                animalEntity = new Omnivore(
+                        name,
+                        animalData.getMass()
+                );
+                break;
+            case "Parasites":
+                animalEntity = new Parasite(
+                        name,
+                        animalData.getMass()
+                );
+                break;
+            default:
+                System.out.println("Invalid animal input");
+                break;
+        }
+        return animalEntity;
+    }
+
     /**
      * @param inputPath  input file path
      * @param outputPath output file path

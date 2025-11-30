@@ -1,11 +1,12 @@
 package entities;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public abstract class Soil extends Entity {
     @Getter
     private double nitrogen;
-    @Getter
+    @Getter @Setter
     private double waterRetention;
     @Getter
     private double soilpH;
@@ -50,5 +51,9 @@ public abstract class Soil extends Entity {
         } else {
             return "poor";
         }
+    }
+
+    public final void updateWaterRetention() {
+        this.waterRetention = this.waterRetention + 0.1;
     }
 }

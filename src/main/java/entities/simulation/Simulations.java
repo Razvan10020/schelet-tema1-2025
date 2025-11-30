@@ -323,20 +323,34 @@ public class Simulations {
 
     public void advanceTime(int newTime) {
         int currentTime = territory.getCurrentTime();
-
         while (currentTime < newTime) {
+            currentTime++;
             for (int i = 0; i < territory.getRows(); i++) {
                 for (int j = 0; j < territory.getCols(); j++) {
                     Cell cell = territory.getCell(i, j);
                     if (cell.getPlant() != null && cell.getPlant().isScanned()) {
                         plantEnvChange(i, j);
                     }
+                    if (cell.getWater() != null && cell.getWater().isScanned()) {
+                        cell.getWater().incrementInteractionCounter();
+                        if (cell.getWater().getInteractionCounter() >= 2 && cell.getWater().getInteractionCounter() % 2 == 0) {
+                            if (cell.getAir() != null) {
+                                double newHumidity = cell.getAir().getHumidity() + 0.1;
+                                newHumidity = Math.round(newHumidity * 100.0) / 100.0;
+                                cell.getAir().setHumidity(newHumidity);
+                            }
+                            if (cell.getSoil() != null) {
+                                double newWaterRetention = cell.getSoil().getWaterRetention() + 0.1;
+                                newWaterRetention = Math.round(newWaterRetention * 100.0) / 100.0;
+                                cell.getSoil().setWaterRetention(newWaterRetention);
+                            }
+                        }
+                    }
                     if (cell.getAir() instanceof DesertAir) {
                         ((DesertAir) cell.getAir()).updateStorm(currentTime);
                     }
                 }
             }
-            currentTime++;
         }
         territory.setCurrentTime(newTime);
     }
@@ -353,7 +367,7 @@ public class Simulations {
         && Objects.equals(scannedSmell, "none")
         && Objects.equals(scannedSound, "none")) {
             territory.getCell(teraBot.getX(), teraBot.getY()).getWater().setScanned(true);
-            return "The scanned object is a water";
+            return "The scanned object is water.";
         }
         if(!Objects.equals(scannedColor, "none")
                 && !Objects.equals(scannedSmell, "none")

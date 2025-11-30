@@ -30,6 +30,12 @@ public class Water extends Entity {
     private boolean isFrozen;
     @Getter @Setter
     private boolean scanned = false;
+    @Getter @Setter
+    private int interactionCounter = 0;
+
+    public void incrementInteractionCounter() {
+        this.interactionCounter++;
+    }
 
     public Water(final String name, final double mass,
                   final double salinity, final double ph,

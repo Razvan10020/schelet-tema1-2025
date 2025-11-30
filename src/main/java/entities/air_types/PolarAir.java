@@ -2,13 +2,13 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
-import lombok.Setter;
 
 public final class PolarAir extends Air {
     private static final double MAX_SCORE = 142;
     private static final double ICE_WEIGH = 0.05;
     private static final int PROCENTAGE_MULTIPLIER = 100;
     private static final double ROUNDING_FACTOR = 100.0;
+    private static final double WIND_SPEED_FACTOR = 0.2;
 
     @Getter
     private double iceCrystalConcentration;
@@ -36,9 +36,13 @@ public final class PolarAir extends Air {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
-    public void applyPolarStorm(double windSpeed) {
-        this.windSpeed = windSpeed;
-        setNewQuality(getNewQuality() - (windSpeed * 0.2));
+    /**
+     * Applies the effect of a polar storm.
+     * @param speed The wind speed of the storm.
+     */
+    public void applyPolarStorm(final double speed) {
+        this.windSpeed = speed;
+        setNewQuality(getNewQuality() - (speed * WIND_SPEED_FACTOR));
         setWheatherChanged(true);
     }
 

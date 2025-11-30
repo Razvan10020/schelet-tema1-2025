@@ -24,8 +24,11 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Manages the overall simulation state.
@@ -325,12 +328,19 @@ public class Simulations {
         int currentTime = territory.getCurrentTime();
         while (currentTime < newTime) {
             currentTime++;
+            // Order of interactions: Air, Soil, Water, Plant, Animal
             for (int i = 0; i < territory.getRows(); i++) {
                 for (int j = 0; j < territory.getCols(); j++) {
                     Cell cell = territory.getCell(i, j);
-                    if (cell.getPlant() != null && cell.getPlant().isScanned()) {
-                        plantEnvChange(i, j);
+                    if (cell.getAir() instanceof DesertAir) {
+                        ((DesertAir) cell.getAir()).updateStorm(currentTime);
                     }
+                }
+            }
+
+            for (int i = 0; i < territory.getRows(); i++) {
+                for (int j = 0; j < territory.getCols(); j++) {
+                    Cell cell = territory.getCell(i, j);
                     if (cell.getWater() != null && cell.getWater().isScanned()) {
                         cell.getWater().incrementInteractionCounter();
                         if (cell.getWater().getInteractionCounter() >= 2 && cell.getWater().getInteractionCounter() % 2 == 0) {
@@ -346,8 +356,14 @@ public class Simulations {
                             }
                         }
                     }
-                    if (cell.getAir() instanceof DesertAir) {
-                        ((DesertAir) cell.getAir()).updateStorm(currentTime);
+                }
+            }
+
+            for (int i = 0; i < territory.getRows(); i++) {
+                for (int j = 0; j < territory.getCols(); j++) {
+                    Cell cell = territory.getCell(i, j);
+                    if (cell.getPlant() != null && cell.getPlant().isScanned()) {
+                        plantEnvChange(i, j);
                     }
                 }
             }
@@ -357,31 +373,47 @@ public class Simulations {
 
     private static final int CONSTANT_OF_L_ENERGY = 7;
     public String scanObject(CommandInput command) {
-        teraBot.setEnergy(teraBot.getEnergy() - CONSTANT_OF_L_ENERGY);
+        if (teraBot.getEnergy() < CONSTANT_OF_L_ENERGY) {
+            return "ERROR: Not enough battery left. Cannot perform action";
+        }
 
         String scannedColor = command.getColor();
         String scannedSmell = command.getSmell();
         String scannedSound = command.getSound();
+        Cell currentCell = territory.getCell(teraBot.getX(), teraBot.getY());
 
         if(Objects.equals(scannedColor, "none")
         && Objects.equals(scannedSmell, "none")
         && Objects.equals(scannedSound, "none")) {
-            territory.getCell(teraBot.getX(), teraBot.getY()).getWater().setScanned(true);
-            return "The scanned object is water.";
+            if (currentCell.getWater() != null) {
+                currentCell.getWater().setScanned(true);
+                teraBot.setEnergy(teraBot.getEnergy() - CONSTANT_OF_L_ENERGY);
+                return "The scanned object is water.";
+            } else {
+                return "ERROR: Object not found. Cannot perform action";
+            }
         }
         if(!Objects.equals(scannedColor, "none")
                 && !Objects.equals(scannedSmell, "none")
                 && Objects.equals(scannedSound, "none")) {
-            territory.getCell(teraBot.getX(), teraBot.getY()).getPlant().setScanned(true);
-            return "The scanned object is a plant.";
+            if (currentCell.getPlant() != null) {
+                currentCell.getPlant().setScanned(true);
+                teraBot.setEnergy(teraBot.getEnergy() - CONSTANT_OF_L_ENERGY);
+                return "The scanned object is a plant.";
+            } else {
+                return "ERROR: Object not found. Cannot perform action";
+            }
         }
-        else if (!Objects.equals(scannedColor, "none")
-                && !Objects.equals(scannedSmell, "none")
-                && !Objects.equals(scannedSound, "none")) {
-            territory.getCell(teraBot.getX(), teraBot.getY()).getAnimal().setScanned(true);
-            return "The scanned object is a animal.";
+        else if (Stream.of(scannedColor, scannedSmell, scannedSound).noneMatch(s -> Objects.equals(s, "none"))) {
+            if (currentCell.getAnimal() != null) {
+                currentCell.getAnimal().setScanned(true);
+                teraBot.setEnergy(teraBot.getEnergy() - CONSTANT_OF_L_ENERGY);
+                return "The scanned object is an animal.";
+            } else {
+                return "ERROR: Object not found. Cannot perform action";
+            }
         }
-        return " ";
+        return "ERROR: Object not found. Cannot perform action";
     }
 
 }

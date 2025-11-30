@@ -2,7 +2,6 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
-import lombok.Setter;
 
 public final class DesertAir extends Air {
     private static final double MAX_SCORE = 65;
@@ -46,13 +45,27 @@ public final class DesertAir extends Air {
     }
 
 
-    public void setDesertStorm(boolean desertStorm, int currentTimestamp) {
-        this.desertStorm = desertStorm;
-        if (desertStorm) {
+    /**
+     * Sets the desert storm status.
+     * @param desertStorm The desert storm status.
+     * @param currentTimestamp The current timestamp.
+     */
+    /**
+     * Sets the desert storm status.
+     * @param isStorming The desert storm status.
+     * @param currentTimestamp The current timestamp.
+     */
+    public void setDesertStorm(final boolean isStorming, final int currentTimestamp) {
+        this.desertStorm = isStorming;
+        if (isStorming) {
             this.stormStartTimestamp = currentTimestamp;
         }
     }
-    public void updateStorm(int currentTimestamp) {
+    /**
+     * Updates the storm status based on the current timestamp.
+     * @param currentTimestamp The current timestamp.
+     */
+    public void updateStorm(final int currentTimestamp) {
         if (stormStartTimestamp != -1 && currentTimestamp >= stormStartTimestamp + STORM_DURATION) {
             this.desertStorm = false;
             setWheatherChanged(false);

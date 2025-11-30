@@ -2,7 +2,6 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
-import lombok.Setter;
 
 public final class MountainAir extends Air {
     private static final double MAX_SCORE = 78;
@@ -11,6 +10,7 @@ public final class MountainAir extends Air {
     private static final double ALTITUDE_FACTOR = 1000.0;
     private static final int PROCENTAGE_MULTIPLIER = 100;
     private static final double ROUNDING_FACTOR = 100.0;
+    private static final double HIKER_FACTOR = 0.1;
 
     @Getter
     private double altitude;
@@ -35,9 +35,13 @@ public final class MountainAir extends Air {
         return Math.round(normalizeScore * ROUNDING_FACTOR) / ROUNDING_FACTOR;
     }
 
-    public void updateWeather(int numberOfHikers) {
-        numberOfHikers = this.numberOfHikers;
-        setNewQuality(getNewQuality() - (numberOfHikers * 0.1));
+    /**
+     * Updates the wheather based on the number of hikers.
+     * @param hikers The number of hikers.
+     */
+    public void updateWeather(final int hikers) {
+        this.numberOfHikers = hikers;
+        setNewQuality(getNewQuality() - (hikers * HIKER_FACTOR));
         setWheatherChanged(true);
     }
 

@@ -2,6 +2,7 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
+import lombok.Setter;
 
 public final class TemperateAir extends Air {
     private static final double MAX_SCORE = 84;
@@ -12,6 +13,9 @@ public final class TemperateAir extends Air {
 
     @Getter
     private double pollenLevel;
+    @Getter
+    private String season;
+
 
     public TemperateAir(final String name, final double mass,
                         final double humidity, final double temperature,
@@ -35,8 +39,10 @@ public final class TemperateAir extends Air {
     }
 
     public void applyNewSeason(String season) {
+        this.season = season;
         int seasonPenalty = "Spring".equalsIgnoreCase(season) ? 15 : 0;
         setNewQuality(getNewQuality() - seasonPenalty);
+        setWheatherChanged(true);
     }
 
     /**

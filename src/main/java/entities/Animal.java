@@ -1,10 +1,13 @@
 package entities;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Animal extends Entity {
     @Getter
     private double attackChance;
+    @Getter @Setter
+    private boolean scanned = false;
 
     /**
      * Constructor for Animal entity.

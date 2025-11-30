@@ -1,6 +1,7 @@
 package entities;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import static java.lang.Math.abs;
 
@@ -27,6 +28,8 @@ public class Water extends Entity {
     private double contaminantIndex;
     @Getter
     private boolean isFrozen;
+    @Getter @Setter
+    private boolean scanned = false;
 
     public Water(final String name, final double mass,
                   final double salinity, final double ph,

@@ -12,6 +12,7 @@ public class Territory {
     private Cell[][] grid;
     private int rows;
     private int cols;
+    private int currentTime;
 
     /**
      * Constructor for the Territory class.
@@ -22,11 +23,13 @@ public class Territory {
         this.rows = rows;
         this.cols = cols;
         this.grid = new Cell[rows][cols];
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 grid[i][j] = new Cell();
             }
         }
+        this.currentTime = 1;
     }
 
     /**

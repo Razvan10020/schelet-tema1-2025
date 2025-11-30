@@ -42,6 +42,7 @@ import fileio.WaterInput;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * The entry point to this homework. It runs the checker that tests your implementation.
@@ -57,184 +58,27 @@ public final class Main {
     private static void initializeSimulation(final Simulations simulations,
                                              final SimulationInput currentSimulation) {
         for (SoilInput soilData : currentSimulation.getTerritorySectionParams().getSoil()) {
-            String name = soilData.getName();
             String type = soilData.getType();
 
             Soil soilEntity = null;
-            switch (type) {
-                case "ForestSoil":
-                    soilEntity = new ForestSoil(
-                            name,
-                            soilData.getMass(),
-                            soilData.getNitrogen(),
-                            soilData.getWaterRetention(),
-                            soilData.getSoilpH(),
-                            soilData.getOrganicMatter(),
-                            soilData.getLeafLitter()
-                    );
-                    break;
-                case "DesertSoil":
-                    soilEntity = new DesertSoil(
-                            name,
-                            soilData.getMass(),
-                            soilData.getNitrogen(),
-                            soilData.getWaterRetention(),
-                            soilData.getSoilpH(),
-                            soilData.getOrganicMatter(),
-                            soilData.getSalinity()
-                    );
-                    break;
-                case "GrasslandSoil":
-                    soilEntity = new GrasslandSoil(
-                            name,
-                            soilData.getMass(),
-                            soilData.getNitrogen(),
-                            soilData.getWaterRetention(),
-                            soilData.getSoilpH(),
-                            soilData.getOrganicMatter(),
-                            soilData.getRootDensity()
-                    );
-                    break;
-                case "SwampSoil":
-                    soilEntity = new SwampSoil(
-                            name,
-                            soilData.getMass(),
-                            soilData.getNitrogen(),
-                            soilData.getWaterRetention(),
-                            soilData.getSoilpH(),
-                            soilData.getOrganicMatter(),
-                            soilData.getWaterLogging()
-                    );
-                    break;
-                case "TundraSoil":
-                    soilEntity = new TundraSoil(
-                            name,
-                            soilData.getMass(),
-                            soilData.getNitrogen(),
-                            soilData.getWaterRetention(),
-                            soilData.getSoilpH(),
-                            soilData.getOrganicMatter(),
-                            soilData.getPermafrostDepth()
-                    );
-                    break;
-                default:
-                    System.out.println("Invalid soil input");
-                    break;
-            }
             for (PairInput pair : soilData.getSections()) {
-                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setSoil(soilEntity);
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setSoil(newSoil(type, soilData));
             }
         }
 
         for (AirInput airData : currentSimulation.getTerritorySectionParams().getAir()) {
-            String name = airData.getName();
             String type = airData.getType();
 
-            Air airEntity = null;
-
-            switch (type) {
-                case "DesertAir":
-                    airEntity = new DesertAir(
-                            name,
-                            airData.getMass(),
-                            airData.getHumidity(),
-                            airData.getTemperature(),
-                            airData.getOxygenLevel(),
-                            airData.getDustParticles()
-                    );
-                    break;
-                case "MountainAir":
-                    airEntity = new MountainAir(
-                            name,
-                            airData.getMass(),
-                            airData.getHumidity(),
-                            airData.getTemperature(),
-                            airData.getOxygenLevel(),
-                            airData.getAltitude()
-                    );
-                    break;
-                case "PolarAir":
-                    airEntity = new PolarAir(
-                            name,
-                            airData.getMass(),
-                            airData.getHumidity(),
-                            airData.getTemperature(),
-                            airData.getOxygenLevel(),
-                            airData.getIceCrystalConcentration()
-                    );
-                    break;
-                case "TemperateAir":
-                    airEntity = new TemperateAir(
-                            name,
-                            airData.getMass(),
-                            airData.getHumidity(),
-                            airData.getTemperature(),
-                            airData.getOxygenLevel(),
-                            airData.getPollenLevel()
-                    );
-                    break;
-                case "TropicalAir":
-                    airEntity = new TropicalAir(
-                            name,
-                            airData.getMass(),
-                            airData.getHumidity(),
-                            airData.getTemperature(),
-                            airData.getOxygenLevel(),
-                            airData.getCo2Level()
-                    );
-                    break;
-                default:
-                    System.out.println("Invalid air input");
-                    break;
-            }
-
             for (PairInput pair : airData.getSections()) {
-                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setAir(airEntity);
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setAir(newAir(type, airData));
             }
         }
 
         for (PlantInput plantData : currentSimulation.getTerritorySectionParams().getPlants()) {
-            String name = plantData.getName();
             String type = plantData.getType();
 
-            Plant plantEntity = null;
-            switch (type) {
-                case "Algae":
-                    plantEntity = new Algae(
-                            name,
-                            plantData.getMass()
-                    );
-                    break;
-                case "Ferns":
-                    plantEntity = new Ferns(
-                            name,
-                            plantData.getMass()
-                    );
-                    break;
-                case "FloweringPlants":
-                    plantEntity = new FloweringPlants(
-                            name,
-                            plantData.getMass()
-                    );
-                    break;
-                case "GymnospermsPlants":
-                    plantEntity = new GymnospermsPlants(
-                            name,
-                            plantData.getMass()
-                    );
-                    break;
-                case "Mosses":
-                    plantEntity = new Mosses(
-                            name,
-                            plantData.getMass()
-                    );
-                    break;
-                default:
-                    System.out.println("Invalid plant input");
-                    break;
-            }
             for (PairInput pair : plantData.getSections()) {
-                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setPlant(plantEntity);
+                simulations.getTerritory().getCell(pair.getY(), pair.getX()).setPlant(newPlant(type, plantData));
             }
         }
 
@@ -302,7 +146,171 @@ public final class Main {
         }
     }
 
+    public static Soil newSoil(String type, SoilInput soilData) {
+        Soil soilEntity = null;
+        switch (type) {
+            case "ForestSoil":
+                soilEntity = new ForestSoil(
+                        soilData.getName(),
+                        soilData.getMass(),
+                        soilData.getNitrogen(),
+                        soilData.getWaterRetention(),
+                        soilData.getSoilpH(),
+                        soilData.getOrganicMatter(),
+                        soilData.getLeafLitter()
+                );
+                break;
+            case "DesertSoil":
+                soilEntity = new DesertSoil(
+                        soilData.getName(),
+                        soilData.getMass(),
+                        soilData.getNitrogen(),
+                        soilData.getWaterRetention(),
+                        soilData.getSoilpH(),
+                        soilData.getOrganicMatter(),
+                        soilData.getSalinity()
+                );
+                break;
+            case "GrasslandSoil":
+                soilEntity = new GrasslandSoil(
+                        soilData.getName(),
+                        soilData.getMass(),
+                        soilData.getNitrogen(),
+                        soilData.getWaterRetention(),
+                        soilData.getSoilpH(),
+                        soilData.getOrganicMatter(),
+                        soilData.getRootDensity()
+                );
+                break;
+            case "SwampSoil":
+                soilEntity = new SwampSoil(
+                        soilData.getName(),
+                        soilData.getMass(),
+                        soilData.getNitrogen(),
+                        soilData.getWaterRetention(),
+                        soilData.getSoilpH(),
+                        soilData.getOrganicMatter(),
+                        soilData.getWaterLogging()
+                );
+                break;
+            case "TundraSoil":
+                soilEntity = new TundraSoil(
+                        soilData.getName(),
+                        soilData.getMass(),
+                        soilData.getNitrogen(),
+                        soilData.getWaterRetention(),
+                        soilData.getSoilpH(),
+                        soilData.getOrganicMatter(),
+                        soilData.getPermafrostDepth()
+                );
+                break;
+            default:
+                System.out.println("Invalid soil input");
+                break;
+        }
+        return soilEntity;
+    }
 
+    public static Plant newPlant(String type, PlantInput plantData) {
+        Plant plantEntity = null;
+        switch (type) {
+            case "Algae":
+                plantEntity = new Algae(
+                        plantData.getName(),
+                        plantData.getMass()
+                );
+                break;
+            case "Ferns":
+                plantEntity = new Ferns(
+                        plantData.getName(),
+                        plantData.getMass()
+                );
+                break;
+            case "FloweringPlants":
+                plantEntity = new FloweringPlants(
+                        plantData.getName(),
+                        plantData.getMass()
+                );
+                break;
+            case "GymnospermsPlants":
+                plantEntity = new GymnospermsPlants(
+                        plantData.getName(),
+                        plantData.getMass()
+                );
+                break;
+            case "Mosses":
+                plantEntity = new Mosses(
+                        plantData.getName(),
+                        plantData.getMass()
+                );
+                break;
+            default:
+                System.out.println("Invalid plant input");
+                break;
+        }
+        return  plantEntity;
+    }
+
+    public static Air newAir(String type, AirInput airData) {
+        Air airEntity = null;
+        String name = airData.getName();
+        switch (type) {
+            case "DesertAir":
+                airEntity = new DesertAir(
+                        name,
+                        airData.getMass(),
+                        airData.getHumidity(),
+                        airData.getTemperature(),
+                        airData.getOxygenLevel(),
+                        airData.getDustParticles()
+                );
+                break;
+            case "MountainAir":
+                airEntity = new MountainAir(
+                        name,
+                        airData.getMass(),
+                        airData.getHumidity(),
+                        airData.getTemperature(),
+                        airData.getOxygenLevel(),
+                        airData.getAltitude()
+                );
+                break;
+            case "PolarAir":
+                airEntity = new PolarAir(
+                        name,
+                        airData.getMass(),
+                        airData.getHumidity(),
+                        airData.getTemperature(),
+                        airData.getOxygenLevel(),
+                        airData.getIceCrystalConcentration()
+                );
+                break;
+            case "TemperateAir":
+                airEntity = new TemperateAir(
+                        name,
+                        airData.getMass(),
+                        airData.getHumidity(),
+                        airData.getTemperature(),
+                        airData.getOxygenLevel(),
+                        airData.getPollenLevel()
+                );
+                break;
+            case "TropicalAir":
+                airEntity = new TropicalAir(
+                        name,
+                        airData.getMass(),
+                        airData.getHumidity(),
+                        airData.getTemperature(),
+                        airData.getOxygenLevel(),
+                        airData.getCo2Level()
+                );
+                break;
+            default:
+                System.out.println("Invalid air input");
+                break;
+        }
+        return   airEntity;
+    }
     /**
      * @param inputPath  input file path
      * @param outputPath output file path
@@ -310,7 +318,6 @@ public final class Main {
      */
     public static void action(final String inputPath,
                               final String outputPath) throws IOException {
-
         InputLoader inputLoader = new InputLoader(inputPath);
         ArrayNode output = MAPPER.createArrayNode();
         Simulations simulations = new Simulations();
@@ -319,13 +326,21 @@ public final class Main {
             ObjectNode resultNode = MAPPER.createObjectNode();
             resultNode.put("command", command.getCommand());
 
+            if (!simulations.isSimulationStarted() && !Objects.equals(command.getCommand(), "startSimulation")) {
+                resultNode.put("message",
+                        "ERROR: Simulation not started. Cannot perform action");
+                resultNode.put("timestamp", command.getTimestamp());
+                output.add(resultNode);
+                continue;
+            }
+
             if (simulations.isSimulationStarted() && simulations.getTeraBot() != null &&
                     simulations.getTeraBot().isCharging()) {
                     if (command.getTimestamp() < simulations.getTeraBot().getCharge_unit()) {
                         resultNode.put("message", "ERROR: Robot still charging. Cannot perform action");
                         resultNode.put("timestamp", command.getTimestamp());
                         output.add(resultNode);
-                        continue; // Skip to the next command
+                        continue;
                     } else {
                         simulations.getTeraBot().setCharging(false);
                     }
@@ -333,11 +348,7 @@ public final class Main {
 
             switch (command.getCommand()) {
                 case "startSimulation":
-                    if (simulations.isSimulationStarted()) {
-                        resultNode.put("message",
-                                "ERROR: Simulation already started. Cannot perform action");
-                        resultNode.put("timestamp", command.getTimestamp());
-                    } else {
+                    if (!simulations.isSimulationStarted()) {
                         SimulationInput currentSimulation = inputLoader.getSimulations().get(0);
                         simulations.startSimulation(currentSimulation);
                         initializeSimulation(simulations, currentSimulation);
@@ -347,71 +358,45 @@ public final class Main {
                     output.add(resultNode);
                     break;
                 case "endSimulation":
-                    if (!simulations.isSimulationStarted()) {
-                        resultNode.put("message",
-                                "ERROR: Simulation not started. Cannot perform action");
-                        resultNode.put("timestamp", command.getTimestamp());
-                    } else {
-                        simulations.endSimulation();
-                        resultNode.put("message", "Simulation has ended.");
-                        resultNode.put("timestamp", command.getTimestamp());
-                    }
+                    simulations.endSimulation();
+                    resultNode.put("message", "Simulation has ended.");
+                    resultNode.put("timestamp", command.getTimestamp());
                     output.add(resultNode);
                     break;
                 case "printEnvConditions":
-                    if (!simulations.isSimulationStarted()) {
-                        resultNode.put("message",
-                                "ERROR: Simulation not started. Cannot perform action");
-                        resultNode.put("timestamp", command.getTimestamp());
-                    } else {
-                        resultNode.set("output", simulations.printEnvConditions());
-                        resultNode.put("timestamp", command.getTimestamp());
-                    }
+                    resultNode.set("output", simulations.printEnvConditions());
+                    resultNode.put("timestamp", command.getTimestamp());
                     output.add(resultNode);
                     break;
                 case "printMap":
-                    if (!simulations.isSimulationStarted()) {
-                        resultNode.put("message",
-                                "ERROR: Simulation not started. Cannot perform action");
-                        resultNode.put("timestamp", command.getTimestamp());
-                    } else {
-                        resultNode.set("output", simulations.printMap());
-                        resultNode.put("timestamp", command.getTimestamp());
-                    }
+                    resultNode.set("output", simulations.printMap());
+                    resultNode.put("timestamp", command.getTimestamp());
                     output.add(resultNode);
                     break;
                 case "moveRobot":
-                    if (!simulations.isSimulationStarted()) {
-                        resultNode.put("message",
-                                "ERROR: Simulation not started. Cannot perform action");
-                        resultNode.put("timestamp", command.getTimestamp());
-                    } else {
-                        resultNode.put("message", simulations.moveRobot());
-                        resultNode.put("timestamp", command.getTimestamp());
-                    }
+                    resultNode.put("message", simulations.moveRobot());
+                    resultNode.put("timestamp", command.getTimestamp());
                     output.add(resultNode);
                     break;
                 case "getEnergyStatus":
-                    if (!simulations.isSimulationStarted()) {
-                        resultNode.put("message",
-                                "ERROR: Simulation not started. Cannot perform action");
-                        resultNode.put("timestamp", command.getTimestamp());
-                    } else {
-                        resultNode.put("message", simulations.getEnergyStatus());
-                        resultNode.put("timestamp", command.getTimestamp());
-                    }
+                    resultNode.put("message", simulations.getEnergyStatus());
+                    resultNode.put("timestamp", command.getTimestamp());
                     output.add(resultNode);
                     break;
                 case "rechargeBattery":
-                    if (!simulations.isSimulationStarted()) {
-                        resultNode.put("message",
-                                "ERROR: Simulation not started. Cannot perform action");
-                        resultNode.put("timestamp", command.getTimestamp());
-                    } else {
-                        resultNode.put("message", simulations.rechargeBattery(command.getTimeToCharge(),
+                    resultNode.put("message", simulations.rechargeBattery(command.getTimeToCharge(),
                                                                                         command.getTimestamp()));
-                        resultNode.put("timestamp", command.getTimestamp());
-                    }
+                    resultNode.put("timestamp", command.getTimestamp());
+                    output.add(resultNode);
+                    break;
+                case "changeWeatherConditions":
+                    resultNode.put("message", simulations.changeWeatherConditions(command));
+                    resultNode.put("timestamp", command.getTimestamp());
+                    output.add(resultNode);
+                    break;
+                case "scanObject":
+                    resultNode.put("message", simulations.scanObject(command));
+                    resultNode.put("timestamp", command.getTimestamp());
                     output.add(resultNode);
                     break;
                 default:
@@ -420,6 +405,8 @@ public final class Main {
                     output.add(resultNode);
                     break;
             }
+
+            if(simulations.isSimulationStarted()) simulations.advanceTime(command.getTimestamp());
         }
 
         File outputFile = new File(outputPath);

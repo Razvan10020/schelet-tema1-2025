@@ -2,6 +2,7 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
+import lombok.Setter;
 
 public final class PolarAir extends Air {
     private static final double MAX_SCORE = 142;
@@ -11,6 +12,8 @@ public final class PolarAir extends Air {
 
     @Getter
     private double iceCrystalConcentration;
+    @Getter
+    private double windSpeed;
 
     public PolarAir(final String name, final double mass,
                     final double humidity, final double temperature,
@@ -34,7 +37,9 @@ public final class PolarAir extends Air {
     }
 
     public void applyPolarStorm(double windSpeed) {
+        this.windSpeed = windSpeed;
         setNewQuality(getNewQuality() - (windSpeed * 0.2));
+        setWheatherChanged(true);
     }
 
     /**

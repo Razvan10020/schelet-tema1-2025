@@ -2,6 +2,7 @@ package entities.air_types;
 
 import entities.Air;
 import lombok.Getter;
+import lombok.Setter;
 
 public final class MountainAir extends Air {
     private static final double MAX_SCORE = 78;
@@ -13,6 +14,8 @@ public final class MountainAir extends Air {
 
     @Getter
     private double altitude;
+    @Getter
+    private int numberOfHikers;
 
     public MountainAir(final String name, final double mass,
                        final double humidity, final double temperature,
@@ -33,7 +36,9 @@ public final class MountainAir extends Air {
     }
 
     public void updateWeather(int numberOfHikers) {
+        numberOfHikers = this.numberOfHikers;
         setNewQuality(getNewQuality() - (numberOfHikers * 0.1));
+        setWheatherChanged(true);
     }
 
     /**

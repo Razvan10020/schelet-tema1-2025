@@ -1,5 +1,6 @@
 package entities.simulation;
-
+//verificare123
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -24,6 +25,7 @@ import lombok.Setter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Manages the overall simulation state.
@@ -85,16 +87,14 @@ public class Simulations {
             soilNode.put("organicMatter", soil.getOrganicMatter());
             soilNode.put("soilQuality", soil.calculateQualityScore());
 
-            if (soil instanceof ForestSoil) {
-                soilNode.put("leafLitter", ((ForestSoil) soil).getLeafLitter());
-            } else if (soil instanceof DesertSoil) {
-                soilNode.put("salinity", ((DesertSoil) soil).getSalinity());
-            } else if (soil instanceof GrasslandSoil) {
-                soilNode.put("rootDensity", ((GrasslandSoil) soil).getRootDensity());
-            } else if (soil instanceof SwampSoil) {
-                soilNode.put("waterLogging", ((SwampSoil) soil).getWaterLogging());
-            } else if (soil instanceof TundraSoil) {
-                soilNode.put("permafrostDepth", ((TundraSoil) soil).getPermafrostDepth());
+            switch (soil) {
+                case ForestSoil forestSoil -> soilNode.put("leafLitter", forestSoil.getLeafLitter());
+                case DesertSoil desertSoil -> soilNode.put("salinity", desertSoil.getSalinity());
+                case GrasslandSoil grasslandSoil -> soilNode.put("rootDensity", grasslandSoil.getRootDensity());
+                case SwampSoil swampSoil -> soilNode.put("waterLogging", swampSoil.getWaterLogging());
+                case TundraSoil tundraSoil -> soilNode.put("permafrostDepth", tundraSoil.getPermafrostDepth());
+                default -> {
+                }
             }
             cellNode.set("soil", soilNode);
         }
@@ -144,20 +144,30 @@ public class Simulations {
             airNode.put("temperature", air.getTemperature());
             airNode.put("oxygenLevel", air.getOxygenLevel());
             airNode.put("airQuality", air.calculateQualityScore());
-            if (air instanceof TemperateAir) {
-                airNode.put("pollenLevel", ((TemperateAir) air).getPollenLevel());
-            } else if (air instanceof DesertAir) {
-                airNode.put("dustParticles", ((DesertAir) air).getDustParticles());
-            } else if (air instanceof MountainAir) {
-                airNode.put("altitude", ((MountainAir) air).getAltitude());
-            } else if (air instanceof PolarAir) {
-                airNode.put("iceCrystalConcentration", ((PolarAir) air).getIceCrystalConcentration());
-            } else if (air instanceof TropicalAir) {
-                airNode.put("co2Level", ((TropicalAir) air).getCo2Level());
+            switch (air) {
+                case TemperateAir a -> airNode.put("pollenLevel", a.getPollenLevel());
+
+                case DesertAir a -> airNode.put("desertStorm", a.isDesertStorm());
+
+                case MountainAir a -> {
+                    airNode.put("altitude", a.getAltitude());
+                }
+
+                case PolarAir a -> {
+                    airNode.put("iceCrystalConcentration", a.getIceCrystalConcentration());
+                }
+
+                case TropicalAir a -> {
+                    airNode.put("co2Level", a.getCo2Level());
+                }
+
+                default -> {
+                    // nu facem nimic pentru alte tipuri
+                }
             }
+
             cellNode.set("air", airNode);
         }
-
         return cellNode;
     }
 
@@ -239,7 +249,7 @@ public class Simulations {
     }
 
     public String getEnergyStatus(){
-        if(teraBot.isCharging() == true){
+        if(teraBot.isCharging()){
             return "ERROR: Robot still charging. Cannot perform action";
         }
         int x = teraBot.getEnergy();
@@ -260,8 +270,6 @@ public class Simulations {
     }
 
     public String changeWeatherConditions(CommandInput command) {
-        boolean weatherChanged = false;
-
         for (int i = 0; i < territory.getRows(); i++) {
             for (int j = 0; j < territory.getCols(); j++) {
 
@@ -269,57 +277,97 @@ public class Simulations {
                 if (air != null) {
 
                     switch (command.getType()) {
-
                         case "rainfall":
-                            if (air instanceof TropicalAir) {
-                                ((TropicalAir) air).applyRainfall(command.getRainfall());
-                                weatherChanged = true;
-                            }
+                            if (air instanceof TropicalAir) ((TropicalAir) air)
+                                    .applyRainfall(command.getRainfall());
                             break;
 
                         case "polarStorm":
-                            if (air instanceof PolarAir) {
-                                ((PolarAir) air).applyPolarStorm(command.getWindSpeed());
-                                weatherChanged = true;
-                            }
+                            if (air instanceof PolarAir) ((PolarAir) air)
+                                    .applyPolarStorm(command.getWindSpeed());
                             break;
 
                         case "newSeason":
-                            // ai o gresala in cod: TemperatAir → TemperateAir?
-                            if (air instanceof TemperateAir) {
-                                ((TemperateAir) air).applyNewSeason(command.getSeason());
-                                weatherChanged = true;
-                            }
+                            if (air instanceof TemperateAir) ((TemperateAir) air).applyNewSeason(command.getSeason());
                             break;
 
                         case "desertStorm":
-                            if (air instanceof DesertAir) {
-                                ((DesertAir) air).setDesertStorm(
+                            if (air instanceof DesertAir) ((DesertAir) air).setDesertStorm(
                                         command.isDesertStorm(),
                                         command.getTimestamp()
                                 );
-                                weatherChanged = true;
-                            }
                             break;
 
                         case "peopleHiking":
-                            if (air instanceof MountainAir) {
-                                ((MountainAir) air).updateWeather(
+                            if (air instanceof MountainAir) ((MountainAir) air).updateWeather(
                                         command.getNumberOfHikers()
                                 );
-                                weatherChanged = true;
-                            }
                             break;
                     }
                 }
             }
         }
+        return "The weather has changed.";
+    }
 
-        if (weatherChanged) {
-            return "The weather has changed.";
-        } else {
-            return "ERROR: The weather change does not affect the environment. Cannot perform action";
+    public void plantEnvChange(int x, int y){
+
+        Cell currentCell = territory.getCell(x,y);
+        currentCell.getPlant().updateMaturity();
+        double last_oxygen_level = currentCell.getAir().getOxygenLevel();
+        double adaos = currentCell.getPlant().getTotalOxygenFromPlant();
+        double result = last_oxygen_level + adaos;
+        result = Math.round(result * 100.0) / 100.0;
+        currentCell.getAir().setOxygenLevel(result);
+    }
+
+    public void advanceTime(int newTime) {
+        int currentTime = territory.getCurrentTime();
+
+        while (currentTime < newTime) {
+            for (int i = 0; i < territory.getRows(); i++) {
+                for (int j = 0; j < territory.getCols(); j++) {
+                    Cell cell = territory.getCell(i, j);
+                    if (cell.getPlant() != null && cell.getPlant().isScanned()) {
+                        plantEnvChange(i, j);
+                    }
+                    if (cell.getAir() instanceof DesertAir) {
+                        ((DesertAir) cell.getAir()).updateStorm(currentTime);
+                    }
+                }
+            }
+            currentTime++;
         }
+        territory.setCurrentTime(newTime);
+    }
+
+    private static final int CONSTANT_OF_L_ENERGY = 7;
+    public String scanObject(CommandInput command) {
+        teraBot.setEnergy(teraBot.getEnergy() - CONSTANT_OF_L_ENERGY);
+
+        String scannedColor = command.getColor();
+        String scannedSmell = command.getSmell();
+        String scannedSound = command.getSound();
+
+        if(Objects.equals(scannedColor, "none")
+        && Objects.equals(scannedSmell, "none")
+        && Objects.equals(scannedSound, "none")) {
+            territory.getCell(teraBot.getX(), teraBot.getY()).getWater().setScanned(true);
+            return "The scanned object is a water";
+        }
+        if(!Objects.equals(scannedColor, "none")
+                && !Objects.equals(scannedSmell, "none")
+                && Objects.equals(scannedSound, "none")) {
+            territory.getCell(teraBot.getX(), teraBot.getY()).getPlant().setScanned(true);
+            return "The scanned object is a plant.";
+        }
+        else if (!Objects.equals(scannedColor, "none")
+                && !Objects.equals(scannedSmell, "none")
+                && !Objects.equals(scannedSound, "none")) {
+            territory.getCell(teraBot.getX(), teraBot.getY()).getAnimal().setScanned(true);
+            return "The scanned object is a animal.";
+        }
+        return " ";
     }
 
 }

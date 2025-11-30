@@ -1,6 +1,8 @@
 package entities.air_types;
 
 import entities.Air;
+import lombok.Getter;
+import lombok.Setter;
 
 public final class DesertAir extends Air {
     private static final double MAX_SCORE = 65;
@@ -8,13 +10,10 @@ public final class DesertAir extends Air {
     private static final double FACTOR_FOR_TEMP = 0.3;
     private static final int PROCENTAGE_MULTIPLIER = 100;
     private static final double ROUNDING_FACTOR = 100.0;
-
+    @Getter
     private double dustParticles;
 
-
-    public double getDustParticles() {
-        return dustParticles;
-    }
+    private static final int STORM_DUST_INCREASE = 150;
 
     public DesertAir(final String name, final double mass,
                      final double humidity, final double temperature,
@@ -25,8 +24,12 @@ public final class DesertAir extends Air {
 
     @Override
     public double calculateQualityScore() {
+        double currentDustParticles = this.dustParticles;
+        if (desertStorm) {
+            currentDustParticles += STORM_DUST_INCREASE;
+        }
         double score = (getOxygenLevel() * 2)
-                - (this.dustParticles * FACTOR_FOR_DUST_PARTICLE)
+                - (currentDustParticles * FACTOR_FOR_DUST_PARTICLE)
                 - (getTemperature() * FACTOR_FOR_TEMP);
         // normalizarea scorului
         double normalizeScore = Math.max(0, Math.min(PROCENTAGE_MULTIPLIER, score));
@@ -38,6 +41,11 @@ public final class DesertAir extends Air {
     private int stormStartTimestamp = -1;
     private static final int STORM_DURATION = 2;
 
+    public boolean isDesertStorm() {
+        return desertStorm;
+    }
+
+
     public void setDesertStorm(boolean desertStorm, int currentTimestamp) {
         this.desertStorm = desertStorm;
         if (desertStorm) {
@@ -47,6 +55,7 @@ public final class DesertAir extends Air {
     public void updateStorm(int currentTimestamp) {
         if (stormStartTimestamp != -1 && currentTimestamp >= stormStartTimestamp + STORM_DURATION) {
             this.desertStorm = false;
+            setWheatherChanged(false);
             this.stormStartTimestamp = -1;
         }
     }

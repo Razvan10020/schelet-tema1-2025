@@ -15,6 +15,8 @@ public abstract class Air extends Entity {
     private double oxygenLevel;
     @Getter @Setter
     private double newQuality;
+    @Getter @Setter
+    protected boolean wheatherChanged = false;
 
     /**
      * Constructor for Air entity.

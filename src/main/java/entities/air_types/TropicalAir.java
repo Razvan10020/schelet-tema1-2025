@@ -15,16 +15,12 @@ public final class TropicalAir extends Air {
     private double co2Level;
     @Getter @Setter
     private double rainfall;
-    public double getCo2Level() {
-        return co2Level;
-    }
 
     public TropicalAir(final String name, final double mass,
                        final double humidity, final double temperature,
                        final double oxygenLevel, final double co2Level) {
         super(name, mass, humidity, temperature, oxygenLevel);
         this.co2Level = co2Level;
-        this.rainfall = 0.0;
     }
 
     /**
@@ -42,6 +38,8 @@ public final class TropicalAir extends Air {
     }
 
     public void applyRainfall(double rainfall) {
+        this.rainfall = rainfall;
+        this.setWheatherChanged(true);
         setNewQuality(getNewQuality() + (rainfall * 0.3));
     }
 

@@ -1,6 +1,9 @@
 package entities;
 
 import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Scanner;
 
 public abstract class Plant extends Entity {
     private static final double OXY_PS_Y = 0.2;
@@ -16,6 +19,8 @@ public abstract class Plant extends Entity {
     private double oxygenFromPlant;
     @Getter
     private double possibilityToGetStuck;
+    @Getter @Setter
+    private boolean scanned;
 
     /**
      * Constructor for Plant entity.
@@ -32,13 +37,14 @@ public abstract class Plant extends Entity {
         this.growthRate = 0.0;
         this.oxygenFromPlant = oxygenFromPlant;
         this.possibilityToGetStuck = possibilityToGetStuck;
+        this.scanned = false;
     }
 
     /**
      * returns the updates status of the plant
      * @return
      */
-    public String updateMaturity() {
+    public void updateMaturity() {
         if (this.growthRate >= 1.0) {
             this.growthRate = 0.0;
 
@@ -56,7 +62,7 @@ public abstract class Plant extends Entity {
                     this.status = "dead";
             }
         }
-        return this.status;
+        else this.growthRate = this.growthRate + 0.3;
     }
 
     /**
